@@ -1,4 +1,20 @@
 <%= render :partial => "tables" %>
 
+<form method="get" action="/tables" >
+	
+	Sort by: 
+	<% @sort_types.each do |type| %>
+		<%= radio_button_tag "sort_by", type, (@selected_sort == type)  %><%= type.titleize %> &nbsp; &nbsp;		
+	<% end %>	
 
-<p>[google chart 'heatmap' horizontal bar graph here]</p>
+	<br />
+	Time interval: 
+	<% @time_interval.each do |interval| %>
+		<%= radio_button_tag "time_interval", interval, (@selected_interval.to_i == interval.to_i) %><%= interval %> &nbsp; &nbsp;
+	<% end %>	
+	
+	<br />	
+	<%= submit_tag "update view" %>
+<%# end %>
+
+<%= render :partial => "data" %>

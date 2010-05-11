@@ -27,13 +27,14 @@ class Table
 
   #return table data
   def self.get_stats
+    #todo: need path variable, verify time to wait for file to appear. 2 seconds is many lifetimes.
     tables = []
     path_to_file = "../../../run/monitoring/"
     orig_file_name = "table_stats.txt"
     copy_file_name = "copy_of_table_stats.txt"
     seconds_to_wait = 2
     
-    #copy table stats "#{app_root}/run/monitoring/table_stats.txt" to here?
+    #copy table stats "#{app_root}/run/monitoring/table_stats.txt" 
     # repeats the copy for some given time.
     time_spent = 0
     start_time = Time.now
@@ -51,7 +52,7 @@ class Table
     end
 
     begin
-      #parse that here
+      #parse copied file here
       file = File.open("#{path_to_file}#{copy_file_name}", "r")
       current_table = Table.new
       file.each do |line|
@@ -69,6 +70,7 @@ class Table
           end
         end
       end
+      #todo: file not deleted. necessary?
       
     rescue
       raise
