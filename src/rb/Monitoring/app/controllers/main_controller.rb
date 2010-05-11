@@ -3,12 +3,14 @@ class MainController < ApplicationController
   
   def index
     @google_chart_test = google_charts_test
-    @rrd_google_chart_test = rrd_google_charts_test
+    # @rrd_google_chart_test = rrd_google_charts_test
+    
+    
+    
     respond_to do |format|
       format.html # index.html.erb
     end
   end
-  
 
   
   ## utility method
