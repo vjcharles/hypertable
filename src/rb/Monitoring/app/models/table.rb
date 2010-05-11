@@ -30,7 +30,7 @@ class Table
     tables = []
     path_to_file = "../../../run/monitoring/"
     orig_file_name = "table_stats.txt"
-    copy_file_name = "table_stats_copy.txt"
+    copy_file_name = "copy_of_table_stats.txt"
     seconds_to_wait = 2
     
     #copy table stats "#{app_root}/run/monitoring/table_stats.txt" to here?
