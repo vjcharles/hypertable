@@ -3,7 +3,7 @@ class Table
   require 'pp'
   require 'ftools'
   def initialize (id=nil)
-    @id = id
+    @table_id = id
     @data = {}
   end
   
@@ -70,8 +70,9 @@ class Table
           end
         end
       end
-      #todo: file not deleted. necessary?
-      
+      #todo: file doesn't appear to be reloaded if modifed externally
+      file.close
+      File.delete("#{path_to_file}#{copy_file_name}")
     rescue
       raise
     end
@@ -80,5 +81,46 @@ class Table
     # pp(tables)
     return tables
   end
-    
+  
+  #todo: this doesn't handle tables with less than 3 indeces of values...
+  def self.sort(tables, sort_by, interval_index)
+    sorted = tables.sort { |x, y|       
+      if sort_by == "name"
+        x.table_id <=> y.table_id
+      elsif sort_by == "reverse_date"
+        y.timestamps <=> x.timestamps
+      else
+        if x.timestamps.length > interval_index.to_i and y.timestamps.length > interval_index.to_i
+          x.data[:"#{sort_by}"][interval_index] <=> y.data[:"#{sort_by}"][interval_index]  
+        else
+          #todo: ommit table if no value for given index? or flag it somehow?
+          0
+        end
+      end
+   } 
+   sorted
+  end
+
+  #todo: doesn't handle if interval_index is there. (it pushes nil)
+  def self.get_all_data(tables, data_type, interval_index)
+    data = []
+    tables.each do |table|
+      if data_type == "name" || data_type == "reverse_date"
+        data.push table.data[:bytes_read][interval_index]
+      else
+        data.push table.data[:"#{data_type}"][interval_index]
+      end
+    end
+    data
+  end
+  
+  def self.get_all_names(tables)
+    names = tables.map {|t| t.table_id }
+  end
+  
+  def get_data_names
+    return [] unless self.data != {}
+    names = self.data.keys.map {|k| k.to_s }
+  end
+
 end

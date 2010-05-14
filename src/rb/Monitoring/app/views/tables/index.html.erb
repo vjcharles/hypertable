@@ -7,12 +7,13 @@
 		<%= radio_button_tag "sort_by", type, (@selected_sort == type)  %><%= type.titleize %> &nbsp; &nbsp;		
 	<% end %>	
 
-	<br />
+	<br /><br />
 	Time interval: 
-	<% @time_interval.each do |interval| %>
-		<%= radio_button_tag "time_interval", interval, (@selected_interval.to_i == interval.to_i) %><%= interval %> &nbsp; &nbsp;
+	<% @time_interval.each_with_index do |interval, i| %>
+		<%= radio_button_tag "time_interval", i, (@selected_index == i) %><%= interval %> &nbsp; &nbsp;
 	<% end %>	
 	
+	<br />	
 	<br />	
 	<%= submit_tag "update view" %>
 <%# end %>
