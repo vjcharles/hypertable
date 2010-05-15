@@ -2,18 +2,27 @@
 
 <form method="get" action="/tables" >
 	
-	Sort by: 
+	<b>Data types: </b> 
+	<% @data_types.each do |type| %>
+		<%= radio_button_tag "data_type", type, (@selected_data == type)  %><%= type.titleize %> &nbsp; &nbsp;		
+	<% end %>	
+	
+	<br />
+	<br />
+	<b>Sort by: </b> 
 	<% @sort_types.each do |type| %>
 		<%= radio_button_tag "sort_by", type, (@selected_sort == type)  %><%= type.titleize %> &nbsp; &nbsp;		
 	<% end %>	
-
-	<br /><br />
-	Time interval: 
+	
+	<br />
+	<br />
+	
+	<b>Time interval: </b>
 	<% @time_interval.each_with_index do |interval, i| %>
 		<%= radio_button_tag "time_interval", i, (@selected_index == i) %><%= interval %> &nbsp; &nbsp;
 	<% end %>	
-	
-	<br />	
+		
+	<br />
 	<br />	
 	<%= submit_tag "update view" %>
 <%# end %>
