@@ -7,4 +7,13 @@ class ApplicationController < ActionController::Base
 
   # Scrub sensitive parameters from your log
   # filter_parameter_logging :password
+  
+  def find_largest(array)
+    array.sort.last
+  end
+
+  def find_smallest(array)
+    array.sort.first
+  end
+  
 end

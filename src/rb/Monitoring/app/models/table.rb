@@ -1,7 +1,7 @@
 # non-activerecord backed model
 class Table
-  require 'pp'
-  require 'ftools'
+  # require 'pp'
+  # require 'ftools'
   def initialize (id=nil)
     @table_id = id
     @data = {}
