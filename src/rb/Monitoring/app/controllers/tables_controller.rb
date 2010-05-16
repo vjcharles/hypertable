@@ -11,7 +11,7 @@ class TablesController < ApplicationController
     
     @selected_sort = params[:sort_by] || "name" # default if no params in url
     @selected_data = params[:data_type] || @data_types[0]
-    @selected_index = params[:time_interval].blank? ? 2 : params[:time_interval].to_i # default interval at index 2 (10 seconds has interesting test data)
+    @selected_index = params[:time_interval].blank? ? 2 : params[:time_interval].to_i # default interval at index 2 (10 minutes has interesting test data)
     
     sorted_tables = Table.sort(tables, @selected_sort, @selected_data, @selected_index)
     data_array = Table.get_all_data(sorted_tables, @selected_data, @selected_index)

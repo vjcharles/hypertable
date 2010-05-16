@@ -20,9 +20,9 @@ module GoogleChart
       "chxl=1:|#{Table.get_all_names(sorted_tables).reverse.map{|n| "name " + n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
       "chco=FF0000&"
     if selected_sort == "name"  
-      chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} seconds" : 'second') #title
+      chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'second') #title
     else
-      chart = chart + "chtt=Sorted by #{selected_data.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} seconds" : 'second') #title
+      chart = chart + "chtt=Sorted by #{selected_data.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'minute') #title
     end
     chart
   end
