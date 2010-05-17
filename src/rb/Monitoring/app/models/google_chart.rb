@@ -18,7 +18,8 @@ module GoogleChart
       "chxr=0,#{smallest},#{largest}&" + # values to be listed (high and low)
       "chxt=x,y&" + 
       "chxl=1:|#{Table.get_all_names(sorted_tables).reverse.map{|n| "name " + n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
-      "chco=FF0000&"
+      "chco=FF0000&" +
+      "chbh=12&" #bar width.x 23px is default
     if selected_sort == "name"  
       chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'second') #title
     else
@@ -35,8 +36,24 @@ module GoogleChart
     return chart_map
   end
   
-  def generate_html_map(json_map)
-    ">>html map here<<"
+  def generate_html_map(json_map, sorted_tables)
+    map = "<map name=#{map_name}>\n"
+    json_map["chartshape"].each do |area|
+      #axes and bars
+
+      title = ""
+      if area["name"] =~ /axis1_(.+)/
+        index = $1
+        title = sorted_tables.reverse[index.to_i].table_id
+      elsif area["name"] =~ /bar0_(.+)/
+        index = $1
+        title = sorted_tables[index.to_i].table_id
+      end
+      
+      href = "#" # a little trickier
+      map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href='#{href}' title='#{title}'>\n"
+    end
+    map += "</map>\n"
   end
   
   # used in view template and controller

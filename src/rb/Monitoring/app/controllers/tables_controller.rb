@@ -20,7 +20,7 @@ class TablesController < ApplicationController
     @json_map = json_map(@chart)
     pp @json_map
     
-    @html_map = generate_html_map(@json_map)
+    @html_map = generate_html_map(@json_map, sorted_tables)
     
     respond_to do |format|
       format.html # index.html.erb
