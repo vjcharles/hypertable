@@ -39,19 +39,19 @@ module GoogleChart
   def generate_html_map(json_map, sorted_tables)
     map = "<map name=#{map_name}>\n"
     json_map["chartshape"].each do |area|
-      #axes and bars
-
+      #axes and bars: title and href
       title = ""
+      href = ""
       if area["name"] =~ /axis1_(.+)/
         index = $1
-        title = sorted_tables.reverse[index.to_i].table_id
+        title = sorted_tables.reverse[index.to_i].table_id  #this may be an actual name later
+        href = tables_path(title) #title is also id right now. may change...
       elsif area["name"] =~ /bar0_(.+)/
         index = $1
-        title = sorted_tables[index.to_i].table_id
-      end
-      
-      href = "#" # a little trickier
-      map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href='#{href}' title='#{title}'>\n"
+        title = sorted_tables[index.to_i].table_id 
+        href = table_path(title)
+      end      
+      map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
     end
     map += "</map>\n"
   end
