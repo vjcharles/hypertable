@@ -26,5 +26,9 @@ class TablesController < ApplicationController
       format.html # index.html.erb
     end
   end
+  
+  def show
+    @table_name = params[:id]
+  end
 
 end
