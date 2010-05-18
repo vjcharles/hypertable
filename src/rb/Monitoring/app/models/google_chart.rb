@@ -21,7 +21,7 @@ module GoogleChart
       "chco=FF0000&" +
       "chbh=12&" #bar width.x 23px is default
     if selected_sort == "name"  
-      chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'second') #title
+      chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + ((time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'second')) #title
     else
       chart = chart + "chtt=Sorted by #{selected_data.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'minute') #title
     end

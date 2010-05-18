@@ -22,13 +22,17 @@ class TablesController < ApplicationController
     
     @html_map = generate_html_map(@json_map, sorted_tables)
     
+    
+    @time = Time.at sorted_tables.first.timestamps[@selected_index] / 10 ** 9
+    
+    
     respond_to do |format|
       format.html # index.html.erb
     end
   end
   
   def show
-    @table_name = params[:id]
+    @table_id = params[:id]
   end
 
 end

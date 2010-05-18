@@ -25,6 +25,7 @@ class Table
                   # :memory_allocated,
                   # :disk_used
 
+  #todo: move and generalize for use with RangeServer. give method args: filename, object name 'Table' or 'RangeServer'
   #return table data
   def self.get_stats
     #todo: need path variable, verify time to wait for file to appear. 2 seconds is many lifetimes.
