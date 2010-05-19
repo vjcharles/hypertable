@@ -8,18 +8,24 @@ module GoogleChart
     smallest = find_smallest(data_array)
     largest = find_largest(data_array)
     
+    #todo: dynamically generate chart size
+    bar_width = 6
+    chart_height = 170
+    chart_width = 300
+    
+    
     # handcrafted googlechart url
     chart = "http://chart.apis.google.com/chart?" + 
       "cht=bhs&" + 
       "chts=FF0000,15&" +
-      "chs=500x170&" + # size
+      "chs=#{chart_width}x#{chart_height}&" + # size
       "chd=t:#{data_array.join(',')}&" + #data 
       "chds=#{smallest},#{largest}&" + # scale
       "chxr=0,#{smallest},#{largest}&" + # values to be listed (high and low)
       "chxt=x,y&" + 
       "chxl=1:|#{Table.get_all_names(sorted_tables).reverse.map{|n| "name " + n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
       "chco=FF0000&" +
-      "chbh=12&" #bar width.x 23px is default
+      "chbh=#{bar_width}&" #bar width.x 23px is default
     if selected_sort == "name"  
       chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + ((time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'second')) #title
     else
@@ -45,7 +51,7 @@ module GoogleChart
       if area["name"] =~ /axis1_(.+)/
         index = $1
         title = sorted_tables.reverse[index.to_i].table_id  #this may be an actual name later
-        href = tables_path(title) #title is also id right now. may change...
+        href = table_path(title) #title is also id right now. may change...
       elsif area["name"] =~ /bar0_(.+)/
         index = $1
         title = sorted_tables[index.to_i].table_id 
