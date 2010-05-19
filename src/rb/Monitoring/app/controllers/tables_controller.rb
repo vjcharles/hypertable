@@ -1,13 +1,14 @@
 class TablesController < ApplicationController
   include GoogleChart
+
+  #todo: get data file to contain types of intervals
   
   def index
+    @time_interval = [1, 5, 10] #hard coded time intervals 
     tables = Table.get_stats
+
     @data_types = tables[0].get_data_names.sort
     @sort_types = ["name", "data"] 
-    
-    #todo: get data file to contain types of intervals
-    @time_interval = [1, 5, 10] #hard coded time intervals 
     
     @selected_sort = params[:sort_by] || "name" # default if no params in url
     @selected_data = params[:data_type] || @data_types[0]
@@ -18,11 +19,10 @@ class TablesController < ApplicationController
     @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_interval, sorted_tables)
     
     @json_map = json_map(@chart)
-    pp @json_map
-    
+        
     @html_map = generate_html_map(@json_map, sorted_tables)
     
-    
+    #todo: this selects the first table's timestamp.
     @time = Time.at sorted_tables.first.timestamps[@selected_index] / 10 ** 9
     
     
@@ -32,7 +32,8 @@ class TablesController < ApplicationController
   end
   
   def show
-    @table_id = params[:id]
+    @time_interval = [1, 5, 10] #hard coded time intervals 
+    @table = Table.get_stat params[:id]
   end
 
 end

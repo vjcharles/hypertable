@@ -25,6 +25,30 @@ class Table
                   # :memory_allocated,
                   # :disk_used
 
+  #get table view
+  def self.get_system_totals
+    tables = self.get_stats
+    data = {}  
+    tables.each do |t|
+      t.data.each do |key, value|
+        data[key] = Array.new(value.length) unless data[key]
+        value.each_with_index do |v, i|
+          data[key][i] = data[key][i].to_i + v unless (v == nil || v == -1)
+        end
+      end
+    end
+    [tables.first.timestamps, data]
+  end
+
+  # find just one. this could be optimized
+  def self.get_stat(uid)
+    tables = self.get_stats
+    tables.each do |table| 
+      return table if table.table_id == uid
+    end
+    return nil
+  end
+
   #todo: move and generalize for use with RangeServer. give method args: filename, object name 'Table' or 'RangeServer'
   #return table data
   def self.get_stats
@@ -100,7 +124,8 @@ class Table
   def self.get_all_data(tables, data_type, interval_index)
     data = []
     tables.each do |table|
-      data.push table.data[:"#{data_type}"][interval_index] #todo: if data doesn't exist for the selected index, push a nil value or -1?
+      #todo: if data doesn't exist for the selected index, push a nil value or -1? No. All values will be present
+      data.push table.data[:"#{data_type}"][interval_index]
     end
     data
   end
@@ -113,5 +138,8 @@ class Table
     return [] unless self.data != {}
     names = self.data.keys.map {|k| k.to_s }
   end
-
+  
+  #todo: temp until we have a real table name
+  alias name table_id 
 end
+
