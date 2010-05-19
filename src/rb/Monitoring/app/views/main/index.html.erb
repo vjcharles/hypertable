@@ -1,6 +1,5 @@
 <h1>Global Stats</h1>
 
-<ul>	
-	<li>coming soon<%#= image_tag @rrd_google_chart_test.to_url %></li>
-</ul>
-<p>See <%= link_to "Tables index", tables_path %> for live graph from data</p>
+<%= render :partial => "list_data" %>
+
+<!-- <p>See <%= link_to "Tables index", tables_path %> for live graph from data</p> -->

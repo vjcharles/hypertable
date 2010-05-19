@@ -1,0 +1,20 @@
+<table border="1"> 
+		<tr>
+			<th>Sums of All Tables <br />in MB unless noted</th>
+		<% @timestamps.each_with_index do |ts, i| %>
+			<th>
+				<%= @time_interval[i].to_s + " minute" + (@time_interval[i].to_i > 1 ? "s" : "")%>
+				<br /><%= (Time.at ts / 10 ** 9).strftime("%Y-%m-%d %H:%M") %>
+			</th>
+		<% end %>
+		</tr>			
+		<tr>	
+			
+		<% @system_totals.each do |key, value| %>
+			<td><%= (key == "shadow_cache_memory".to_sym ? key.to_s.titleize + " GB" : key.to_s.titleize) %></td>
+				<% value.each do |v| %>
+					<td> <%= (key == "shadow_cache_memory".to_sym ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
+				<% end %>
+		</tr>
+		<% end %>
+</table>
