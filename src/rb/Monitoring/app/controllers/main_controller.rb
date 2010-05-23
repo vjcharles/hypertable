@@ -1,6 +1,5 @@
 class MainController < ApplicationController
-  use_google_charts
-  
+
   def index
     @time_interval = [1, 5, 10]
     #via table data
@@ -26,6 +25,6 @@ class MainController < ApplicationController
     return data
     #todo: data needs to be sanitized for gcharts ?
     # [1,5]
-    end
+  end
   
 end

@@ -5,7 +5,7 @@ class TablesController < ApplicationController
   
   def index
     @time_interval = [1, 5, 10] #hard coded time intervals 
-    tables = Table.get_stats
+    tables = Table.get_stats ("Table", "table_stats.txt")
 
     @data_types = tables[0].get_data_names.sort
     @sort_types = ["name", "data"] 
