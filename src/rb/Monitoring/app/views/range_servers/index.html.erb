@@ -1,28 +1,28 @@
 <%= render :partial => "rs" %>
 
-
-<p>rrd test graph</p>
-<%= image_tag "/rrd/#{@range_server_graph_name.to_s}", :alt => "test" %>
-
-<br /><br /><br />
-
-<%#= link_to "RS 1", range_server_path(1) %> 
-
-[view form here]
 <form method="get" action="/range_servers" >
-<%# form_tag :action => "index" do %>
 	
-	Sort by: 
+	<b>Data types: </b> 
+	<% @data_types.each do |type| %>
+		<%= radio_button_tag "data_type", type, (@selected_data == type)  %><%= type.titleize %> &nbsp; &nbsp;		
+	<% end %>	
+	
+	<br />
+	<br />
+	<b>Sort by: </b> 
 	<% @sort_types.each do |type| %>
 		<%= radio_button_tag "sort_by", type, (@selected_sort == type)  %><%= type.titleize %> &nbsp; &nbsp;		
 	<% end %>	
-
-	<br />
-	Time interval: 
-	<% @time_interval.each do |interval| %>
-		<%= radio_button_tag "time_interval", interval, (@selected_interval.to_i == interval.to_i) %><%= interval %> &nbsp; &nbsp;
-	<% end %>	
 	
+	<br />
+	<br />
+	
+	<b>Time interval: </b>
+	<% @time_interval.each_with_index do |interval, i| %>
+		<%= radio_button_tag "time_interval", i, (@selected_index == i) %><%= interval %> &nbsp; &nbsp;
+	<% end %>	
+		
+	<br />
 	<br />	
 	<%= submit_tag "update view" %>
 <%# end %>
