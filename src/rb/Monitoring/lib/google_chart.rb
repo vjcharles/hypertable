@@ -20,10 +20,10 @@ module GoogleChart
       "chts=FF0000,15&" +
       "chs=#{chart_width}x#{chart_height}&" + # size
       "chd=t:#{data_array.join(',')}&" + #data 
-      "chds=#{smallest},#{largest}&" + # scale
-      "chxr=0,#{smallest},#{largest}&" + # values to be listed (high and low)
+      "chds=#{smallest},#{largest}&" + # scale #TODO: this breaks with 1 data point
+      "chxr=0,#{smallest},#{largest}&" + # values to be listed (high and low) 
       "chxt=x,y&" + 
-      "chxl=1:|#{Table.get_all_names(sorted_tables).reverse.map{|n| "name " + n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
+      "chxl=1:|#{Table.get_all_names(sorted_tables).reverse.map{|n| n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
       "chco=FF0000&" +
       "chbh=#{bar_width}&" #bar width.x 23px is default
     if selected_sort == "name"  
@@ -50,11 +50,11 @@ module GoogleChart
       href = ""
       if area["name"] =~ /axis1_(.+)/
         index = $1
-        title = sorted_tables.reverse[index.to_i].table_id  #this may be an actual name later
+        title = sorted_tables.reverse[index.to_i].id  #this may be an actual name later
         href = table_path(title) #title is also id right now. may change...
       elsif area["name"] =~ /bar0_(.+)/
         index = $1
-        title = sorted_tables[index.to_i].table_id 
+        title = sorted_tables[index.to_i].id 
         href = table_path(title)
       end      
       map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
