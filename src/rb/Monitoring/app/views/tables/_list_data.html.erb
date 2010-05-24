@@ -13,7 +13,7 @@
 		</tr>			
 		<tr>	
 			
-		<% @table.data.each do |key, value| %>
+		<% sort_data_hash(@table.data).each do |key, value| %>
 			<td>
 				<%#= key.to_s.titleize %>
 				<%= (key == "shadow_cache_memory".to_sym ? key.to_s.titleize + " GB" : key.to_s.titleize) %>

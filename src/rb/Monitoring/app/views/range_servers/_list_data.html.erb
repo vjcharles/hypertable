@@ -12,7 +12,7 @@
 		</tr>			
 		<tr>	
 			
-		<% @range_server.data.each do |key, value| %>
+		<% sort_data_hash(@range_server.data).each do |key, value| %>
 			<td>
 				<%= key.to_s.titleize %>
 			</td>

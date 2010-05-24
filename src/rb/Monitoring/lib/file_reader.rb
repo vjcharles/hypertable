@@ -12,6 +12,7 @@ module FileReader
         end
       end
     end
+    # data = data.sort { |a, b| a.to_s <=> b.to_s }
     [list.first.timestamps, data]
   end
 
