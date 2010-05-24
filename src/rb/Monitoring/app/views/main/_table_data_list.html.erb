@@ -1,7 +1,7 @@
 <table border="1"> 
 		<tr>
-			<th>Sums of All Tables <br /></th>
-		<% @timestamps.each_with_index do |ts, i| %>
+			<th>Sums of All Tables <br />MB or absolute number <br /> unless noted otherwise </th>
+		<% @table_timestamps.each_with_index do |ts, i| %>
 			<th>
 				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
 				<br /><%= (Time.at ts / 10 ** 9).strftime("%Y-%m-%d %H:%M") %>
@@ -10,7 +10,7 @@
 		</tr>			
 		<tr>	
 			
-		<% @system_totals.each do |key, value| %>
+		<% @table_system_totals.each do |key, value| %>
 			<td><%= (key == "shadow_cache_memory".to_sym ? key.to_s.titleize + " GB" : key.to_s.titleize) %></td>
 				<% value.each do |v| %>
 					<td> <%= (key == "shadow_cache_memory".to_sym ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>

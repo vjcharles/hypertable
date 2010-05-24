@@ -1,0 +1,24 @@
+<table border="1"> 
+		<tr>
+			<th>Sums of All Range Server <br />KB/sec or absolute number <br />unless noted</th>
+		<% @rs_timestamps.each_with_index do |ts, i| %>
+			<th>
+				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
+				<br /><%= (Time.at ts / 10 ** 9).strftime("%Y-%m-%d %H:%M") %>
+			</th>
+		<% end %>
+		</tr>			
+		<tr>	
+			
+		<% @rs_system_totals.each do |key, value| %>
+			<td><%= (key.to_s =~ /_memory/ ? key.to_s.titleize + " GB" : key.to_s.titleize) %></td>
+				<% value.each do |v| %>
+					<td> <%= (key.to_s =~ /_memory/ ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
+				<% end %>
+		</tr>
+		<% end %>
+		
+		
+		
+		
+</table>
