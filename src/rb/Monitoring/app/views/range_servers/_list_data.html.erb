@@ -1,0 +1,26 @@
+<table border="1"> 
+		<tr>
+			<th><%= @range_server.name %>
+				<br />
+			</th>
+		<% @range_server.timestamps.each_with_index do |ts, i| %>
+			<th>
+				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
+				at <%= (Time.at ts / 10 ** 9).strftime("%T") %>
+			</th>
+		<% end %>
+		</tr>			
+		<tr>	
+			
+		<% @range_server.data.each do |key, value| %>
+			<td>
+				<%= key.to_s.titleize %>
+			</td>
+				<% value.each do |v| %>
+					
+					<td> <%= (key == "shadow_cache_memory".to_sym ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
+					
+				<% end %>
+		</tr>
+		<% end %>
+</table>

@@ -30,11 +30,8 @@ class RangeServersController < ApplicationController
   end
   
   def show
-    @range_server = {:rs_id => params[:id]}
-    
-    respond_to do |format|
-      format.html
-    end
+    @time_intervals = FileReader::TIME_INTERVALS
+    @range_server = RangeServer.get_stat params[:id]
   end
     
 end
