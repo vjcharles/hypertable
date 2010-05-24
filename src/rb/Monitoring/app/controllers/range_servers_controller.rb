@@ -3,7 +3,7 @@ class RangeServersController < ApplicationController
   
   def index
     @time_interval = [1, 5, 10] #hard coded time intervals 
-    range_servers = RangeServer.get_stats ("RangeServer", "rs_stats.txt")
+    range_servers = RangeServer.get_stats
 
     @data_types = range_servers[0].get_data_names.sort
     @sort_types = ["name", "data"] 

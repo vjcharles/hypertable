@@ -11,7 +11,7 @@ module GoogleChart
     #todo: dynamically generate chart size
     bar_width = 6
     chart_height = 170
-    chart_width = 300
+    chart_width = 400
     
     
     # handcrafted googlechart url

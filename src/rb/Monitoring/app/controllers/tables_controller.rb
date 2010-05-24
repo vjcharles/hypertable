@@ -5,7 +5,7 @@ class TablesController < ApplicationController
   
   def index
     @time_interval = [1, 5, 10] #hard coded time intervals 
-    tables = Table.get_stats ("Table", "table_stats.txt")
+    tables = Table.get_stats
 
     @data_types = tables[0].get_data_names.sort
     @sort_types = ["name", "data"] 
@@ -19,7 +19,7 @@ class TablesController < ApplicationController
     @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_interval, sorted_tables)
     
     @json_map = json_map(@chart)
-        
+    
     @html_map = generate_html_map(@json_map, sorted_tables)
     
     #todo: this selects the first table's timestamp.

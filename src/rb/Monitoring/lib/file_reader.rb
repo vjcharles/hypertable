@@ -15,7 +15,7 @@ module FileReader
   end
 
   # find just one. this could be optimized
-  def get_stat(uid)
+  def get_stat uid
     list = self.get_stats
     list.each do |table| 
       return table if table.id == uid
@@ -23,21 +23,16 @@ module FileReader
     return nil
   end
   
-  #method args: get_stats(filename, object name 'Table' or 'RangeServer'[, wait_time])
-  def get_stats(object_type=nil, filename=nil, wait_time=2)
+  def get_stats(wait_time=2)
     list = []
-    path_to_file = "../../../run/monitoring/"
-    orig_file_name = filename || "table_stats.txt"
-    copy_file_name = "copy_of_#{orig_file_name}"
-     
-    #copy table stats "#{app_root}/run/monitoring/table_stats.txt" 
+
     # repeats the copy for some given time.
     time_spent = 0
     start_time = Time.now
     elapsed_time = Time.now
     begin
         elapsed_time = Time.now
-        File.copy("#{path_to_file}#{orig_file_name}", "#{path_to_file}#{copy_file_name}")
+        File.copy("#{self::PATH_TO_FILE}#{self::ORIGINAL_FILE_NAME}", "#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}")
     rescue => err
       time_spent = elapsed_time - start_time
       if time_spent <= wait_time
@@ -49,12 +44,13 @@ module FileReader
 
     begin
       #parse copied file here
-      file = File.open("#{path_to_file}#{copy_file_name}", "r")
-      current_table = (object_type == "Table") ? Table.new : RangeServer.new
+      file = File.open("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}", "r")
+      current_table = self.new
       file.each do |line|
         #start parsing...
-        if line =~ /^(#{object_type}) = (.+)/
-          current_table = (object_type == "Table") ? Table.new($2) : RangeServer.new($2)
+        puts self.name.to_s
+        if line =~ /^(#{self.name.to_s}) = (.+)/
+          current_table = self.new($2)
           list.push current_table
         elsif line =~ /^\t(.+)=(.+)/
           key = :"#{$1}"
@@ -69,7 +65,7 @@ module FileReader
       end
       #todo: file doesn't appear to be reloaded if modifed externally
       file.close
-      File.delete("#{path_to_file}#{copy_file_name}")
+      File.delete("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}")
     rescue
       raise
     end    

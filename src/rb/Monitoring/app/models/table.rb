@@ -3,6 +3,10 @@ class Table
   # require 'ftools'
   extend FileReader
   
+  PATH_TO_FILE = "../../../run/monitoring/"
+  ORIGINAL_FILE_NAME = "table_stats.txt"
+  COPY_FILE_NAME = "copy_of_#{@orig_file_name}"
+  
   def initialize (id=nil)
     @id = id
     @data = {}

@@ -3,6 +3,10 @@ class RangeServer
   #class methods from module
   extend FileReader
   
+  PATH_TO_FILE = "../../../run/monitoring/"
+  ORIGINAL_FILE_NAME = "rs_stats.txt"
+  COPY_FILE_NAME = "copy_of_#{@orig_file_name}"
+  
   def initialize (id=nil)
     @id = id
     @data = {}
@@ -12,13 +16,10 @@ class RangeServer
                 :timestamps, 
                 :data
   
-
   def get_data_names
     return [] unless self.data != {}
     names = self.data.keys.map {|k| k.to_s }
   end
-
-
 
   # # demonstrates retrieval and graph generation from an RRDtool db
   # def self.rrd_test
