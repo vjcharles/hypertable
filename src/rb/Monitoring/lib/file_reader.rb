@@ -97,8 +97,8 @@ module FileReader
     data
   end
   
-  def get_all_names(list)
-    names = list.map {|t| t.id }
-  end
+  # def get_all_names(list)
+  #   names = list.map {|t| t.id }
+  # end
   
 end

@@ -1,7 +1,5 @@
 class TablesController < ApplicationController
   include GoogleChart
-
-  #todo: get data file to contain types of intervals
   
   def index
     @time_intervals = FileReader::TIME_INTERVALS

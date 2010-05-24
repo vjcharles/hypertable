@@ -20,6 +20,8 @@ class RangeServer
     return [] unless self.data != {}
     names = self.data.keys.map {|k| k.to_s }
   end
+  
+  alias name id
 
   # # demonstrates retrieval and graph generation from an RRDtool db
   # def self.rrd_test

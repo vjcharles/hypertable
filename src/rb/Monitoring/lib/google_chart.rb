@@ -4,7 +4,7 @@ module GoogleChart
   # chart related functions
   
   #todo: clean this up. manually generated google chart (probably deleting google chart plugin soon...not needed)
-  def generate_chart(data_array, selected_sort, selected_index, selected_data, time_interval, sorted_tables)
+  def generate_chart(data_array, selected_sort, selected_index, selected_data, time_interval, sorted_list)
     smallest = find_smallest(data_array)
     largest = find_largest(data_array)
     
@@ -22,8 +22,8 @@ module GoogleChart
       "chd=t:#{data_array.join(',')}&" + #data 
       "chds=#{smallest},#{largest}&" + # scale #TODO: this breaks with 1 data point
       "chxr=0,#{smallest},#{largest}&" + # values to be listed (high and low) 
-      "chxt=x,y&" + 
-      "chxl=1:|#{Table.get_all_names(sorted_tables).reverse.map{|n| n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
+      "chxt=x,y&" + # "chxl=1:|#{FileReader.get_all_names(sorted_list).reverse.map{|n| n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
+      "chxl=1:|#{sorted_list.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}&" + #notice the order is reversed, put stat label here
       "chco=FF0000&" +
       "chbh=#{bar_width}&" #bar width.x 23px is default
     if selected_sort == "name"  
@@ -42,20 +42,24 @@ module GoogleChart
     return chart_map
   end
   
-  def generate_html_map(json_map, sorted_tables)
+  def generate_html_map(json_map, sorted_list)
     map = "<map name=#{map_name}>\n"
     json_map["chartshape"].each do |area|
       #axes and bars: title and href
       title = ""
       href = ""
+      item = ""
+      
       if area["name"] =~ /axis1_(.+)/
         index = $1
-        title = sorted_tables.reverse[index.to_i].id  #this may be an actual name later
-        href = table_path(title) #title is also id right now. may change...
+        item = sorted_list.reverse[index.to_i]
+        title = item.id  #this may be an actual name later
+        href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title) #title is also id right now. todo: better way to determine the path?
       elsif area["name"] =~ /bar0_(.+)/
         index = $1
-        title = sorted_tables[index.to_i].id 
-        href = table_path(title)
+        item = sorted_list[index.to_i]
+        title = item.id 
+        href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title)  #todo: better way to determine path?
       end      
       map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
     end
