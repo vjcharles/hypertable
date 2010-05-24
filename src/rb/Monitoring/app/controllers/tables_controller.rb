@@ -4,7 +4,7 @@ class TablesController < ApplicationController
   #todo: get data file to contain types of intervals
   
   def index
-    @time_interval = [1, 5, 10] #hard coded time intervals 
+    @time_intervals = FileReader::TIME_INTERVALS
     tables = Table.get_stats
 
     @data_types = tables[0].get_data_names.sort
@@ -16,7 +16,7 @@ class TablesController < ApplicationController
     
     sorted_tables = Table.sort(tables, @selected_sort, @selected_data, @selected_index)
     data_array = Table.get_all_data(sorted_tables, @selected_data, @selected_index)
-    @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_interval, sorted_tables)
+    @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_intervals, sorted_tables)
     
     @json_map = json_map(@chart)
     
@@ -32,7 +32,7 @@ class TablesController < ApplicationController
   end
   
   def show
-    @time_interval = [1, 5, 10] #hard coded time intervals 
+    @time_intervals = FileReader::TIME_INTERVALS
     @table = Table.get_stat params[:id]
   end
 

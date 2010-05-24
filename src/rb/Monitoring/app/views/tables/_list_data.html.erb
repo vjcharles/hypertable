@@ -6,7 +6,7 @@
 		<% @table.timestamps.each_with_index do |ts, i| %>
 			<!-- <th><%#= (Time.at ts / 10 ** 9).strftime("%Y-%d-%m %T") %></th> -->
 			<th>
-				<%= @time_interval[i].to_s + " minute" + (@time_interval[i].to_i > 1 ? "s" : "")%>
+				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
 				at <%= (Time.at ts / 10 ** 9).strftime("%T") %>
 			</th>
 		<% end %>

@@ -1,5 +1,6 @@
 module FileReader
-  #get table view
+  TIME_INTERVALS = [1, 5, 10]
+  #get stat view
   def get_system_totals
     list = self.get_stats
     data = {}  
@@ -17,8 +18,8 @@ module FileReader
   # find just one. this could be optimized
   def get_stat uid
     list = self.get_stats
-    list.each do |table| 
-      return table if table.id == uid
+    list.each do |item| 
+      return item if item.id == uid
     end
     return nil
   end
@@ -45,21 +46,20 @@ module FileReader
     begin
       #parse copied file here
       file = File.open("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}", "r")
-      current_table = self.new
+      current_stat = self.new
       file.each do |line|
         #start parsing...
-        puts self.name.to_s
         if line =~ /^(#{self.name.to_s}) = (.+)/
-          current_table = self.new($2)
-          list.push current_table
+          current_stat = self.new($2)
+          list.push current_stat
         elsif line =~ /^\t(.+)=(.+)/
           key = :"#{$1}"
           values = $2.split(",").map! { |v| v.to_i } #data can be floats
           # values = $2.split(",") #data can be floats
           if key == :Timestamps
-            current_table.timestamps = values
+            current_stat.timestamps = values
           else
-            current_table.data[key] = values
+            current_stat.data[key] = values
           end
         end
       end
@@ -74,14 +74,14 @@ module FileReader
   end
   
   
-  #todo: this doesn't handle tables with less than 3 indeces of values...
+  #todo: this doesn't handle stats with less than 3 indeces of values...
   def sort(list, sort_type, data_type, interval_index)
     sorted = list.sort { |x, y|       
       if sort_type == "name"
         x.id <=> y.id
       elsif sort_type == "data"
         y.data[:"#{data_type}"][interval_index] <=> x.data[:"#{data_type}"][interval_index]
-        #todo: ommit table if no value for given index? or flag it somehow? 0
+        #todo: ommit stat if no value for given index? or flag it somehow? 0
       end
     } 
     sorted
@@ -90,9 +90,9 @@ module FileReader
   #todo: doesn't handle if interval_index is there. (it pushes nil)
   def get_all_data(list, data_type, interval_index)
     data = []
-    list.each do |table|
+    list.each do |item|
       #todo: if data doesn't exist for the selected index, push a nil value or -1? No. All values will be present
-      data.push table.data[:"#{data_type}"][interval_index]
+      data.push item.data[:"#{data_type}"][interval_index]
     end
     data
   end

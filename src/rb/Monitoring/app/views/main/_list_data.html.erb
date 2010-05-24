@@ -3,7 +3,7 @@
 			<th>Sums of All Tables <br /></th>
 		<% @timestamps.each_with_index do |ts, i| %>
 			<th>
-				<%= @time_interval[i].to_s + " minute" + (@time_interval[i].to_i > 1 ? "s" : "")%>
+				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
 				<br /><%= (Time.at ts / 10 ** 9).strftime("%Y-%m-%d %H:%M") %>
 			</th>
 		<% end %>

@@ -2,7 +2,7 @@ class RangeServersController < ApplicationController
   include GoogleChart
   
   def index
-    @time_interval = [1, 5, 10] #hard coded time intervals 
+    @time_intervals = FileReader::TIME_INTERVALS
     range_servers = RangeServer.get_stats
 
     @data_types = range_servers[0].get_data_names.sort
@@ -14,7 +14,7 @@ class RangeServersController < ApplicationController
     
     sorted_range_servers = Table.sort(range_servers, @selected_sort, @selected_data, @selected_index)
     data_array = Table.get_all_data(sorted_range_servers, @selected_data, @selected_index)
-    @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_interval, sorted_range_servers)
+    @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_intervals, sorted_range_servers)
     
     @json_map = json_map(@chart)
         
