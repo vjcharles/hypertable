@@ -33,6 +33,7 @@ module GoogleChart
     }
 
     if selected_sort == "name"  
+      pp selected_stat
       options[:chtt] = "#{selected_stat.titleize}, sorted by #{selected_sort.titleize}|every " + ((time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'second')) #title
     else
       options[:chtt] = "Sorted by #{selected_stat.titleize}|every " + (time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'minute') #title

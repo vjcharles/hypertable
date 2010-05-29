@@ -15,14 +15,12 @@ class TablesController < ApplicationController
     @timestamp_index = params[:time_interval].blank? ? 2 : params[:time_interval].to_i # default interval at index 2 (10 minutes has interesting test data)
     
     chart_key = Table.get_chart_type @selected_stat
-
-    # sorted_tables = Table.sort(tables, @selected_sort, @selected_stat, @timestamp_index)
     sorted_tables = Table.sort(chart_key, tables, @selected_sort, @selected_stat, @timestamp_index)
 
     # dynamic charts
-    # pp chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat
     @chart = generate_chart(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
 
+    #todo: ...
     @json_map = json_map(@chart)
     @html_map = generate_html_map(@json_map, sorted_tables)    
     
