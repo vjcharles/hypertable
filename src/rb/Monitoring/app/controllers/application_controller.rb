@@ -9,11 +9,11 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   
   def find_largest(array)
-    array.sort.last
+    array.flatten.sort.last
   end
 
   def find_smallest(array)
-    array.sort.first
+    array.flatten.sort.first
   end
   
 end

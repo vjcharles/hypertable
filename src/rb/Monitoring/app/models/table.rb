@@ -23,7 +23,6 @@ class Table
     :block_index_memory => bloom_filter_memory,
     :shadow_cache_memory => bloom_filter_memory,
 
-    #todo: stats is redundant for type C graphs...
     :scans => {:type => :C, :stats => [:scans]},
     :bloom_filter_false_positives => {:type => :C, :stats => [:bloom_filter_false_positives]},
     :disk_used => {:type => :C, :stats => [:disk_used]}

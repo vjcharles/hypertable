@@ -103,7 +103,6 @@ module FileReader
           
           c = x.data[chart_key[:stats][0]][interval_index]
           d = x.data[chart_key[:stats][1]][interval_index]
-          
           #todo: handle divide by zero? doesn't blow up with 
           a/(b * 1.0) <=> c/(d * 1.0)
         when :B

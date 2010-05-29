@@ -19,18 +19,11 @@ class TablesController < ApplicationController
     # sorted_tables = Table.sort(tables, @selected_sort, @selected_stat, @timestamp_index)
     sorted_tables = Table.sort2(chart_key, tables, @selected_sort, @selected_stat, @timestamp_index)
 
-    # generic type C chart approch
+    # dynamic charts
     @chart = generate_chart(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
 
-    # dynamic charts
-    @chart = generate_chart2(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
-
-
     @json_map = json_map(@chart)
-    @html_map = generate_html_map(@json_map, sorted_tables)
-    
-    
-    
+    @html_map = generate_html_map(@json_map, sorted_tables)    
     
     #todo: this selects the first table's timestamp.
     @time = Time.at sorted_tables.first.timestamps[@timestamp_index] / 10 ** 9
