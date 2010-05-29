@@ -21,7 +21,7 @@ class TablesController < ApplicationController
     
 
     # generic type C chart approch
-    @chart = generate_chart(@selected_sort, @selected_index, @selected_data, @time_intervals, sorted_tables)
+    @chart = generate_chart(@selected_sort, @selected_index, @selected_data, sorted_tables)
     @json_map = json_map(@chart)
     @html_map = generate_html_map(@json_map, sorted_tables)
     

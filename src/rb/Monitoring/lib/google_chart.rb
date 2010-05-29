@@ -2,7 +2,8 @@
 module GoogleChart
   
   # chart related functions
-  def generate_chart(selected_sort, selected_index, selected_data, time_interval, sorted_list)
+  def generate_chart(selected_sort, selected_index, selected_data, sorted_list)
+    time_interval = FileReader::TIME_INTERVALS
     data_array = Table.get_all_data(sorted_list, selected_data, selected_index)    
     smallest = find_smallest(data_array)
     largest = find_largest(data_array)
