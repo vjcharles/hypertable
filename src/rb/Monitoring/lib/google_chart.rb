@@ -1,7 +1,7 @@
 #All google chart generation methods live here
 module GoogleChart
   
-  # chart related functions
+  # for type c
   def generate_chart(chart_key, sorted_list, selected_sort, timestamp_index, selected_stat)
     time_interval = FileReader::TIME_INTERVALS
     stats_array = Table.get_all_stats(sorted_list, selected_stat, timestamp_index)    
@@ -40,8 +40,10 @@ module GoogleChart
     case chart_key[:type]
     when :A
       puts "A"
+      chart += "cht=bhg"
     when :B
       puts "B"
+      
     when :C
       puts "C"
       chart = generate_chart(chart_key, sorted_list, selected_sort, timestamp_index, selected_stat)
@@ -88,4 +90,44 @@ module GoogleChart
   end
   
   
+end
+
+#options is only 1 level deep of concatination 
+# when giving values to various chart parameters the data needs to be formatted properly for that param ("|", or  "," delimited )
+class ChartURL
+  def initialize (base_url, chart_type, options={})
+    @base_url = base_url
+    @chart_type = chart_type
+    @options = options
+  end
+  
+  attr_accessor :base_url, :chart_type, :options
+
+  def to_s
+    @base_url +  "?" + "cht=" + @chart_type + "&" + options_to_s
+  end
+  
+  private
+  def options_to_s
+    opt = @options.to_a
+    opt = opt.map do |o|
+      if o[1].is_a?(Array)
+        o = o[0].to_s + "=" + o[1].join(",")
+      else #works for Strings, Symbols and ChartValues
+        o = o[0].to_s + "=" + o[1].to_s
+      end
+    end
+    opt.join "&"
+  end
+end
+
+#a chart value is a nested array which with proper chart delimiter for gcharts
+class ChartValue
+  def initialize(values=[[]])
+    @values = values
+  end
+    
+  def to_s
+    @values.map{|a| a = a.join ","}.join "|"
+  end
 end
