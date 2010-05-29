@@ -2,7 +2,8 @@
 module GoogleChart
   
   # chart related functions
-  def generate_chart(data_array, selected_sort, selected_index, selected_data, time_interval, sorted_list)
+  def generate_chart(selected_sort, selected_index, selected_data, time_interval, sorted_list)
+    data_array = Table.get_all_data(sorted_list, selected_data, selected_index)    
     smallest = find_smallest(data_array)
     largest = find_largest(data_array)
     
@@ -31,6 +32,11 @@ module GoogleChart
     chart
   end
 
+  #todo: 2nd version of chart url creation.
+  def generate_chart2
+    
+  end
+  
   
   def json_map(chart)
     chart_map = URI.encode(chart + "&chof=json")

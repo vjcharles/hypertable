@@ -90,7 +90,7 @@ module FileReader
   end
 
   def sort2(chart_key, list, sort_type, selected_data, interval_index)
-    data_type = ""
+    data_type = selected_data.to_sym
     sorted = list.sort { |x, y|       
       if sort_type == "name"
         x.id <=> y.id
@@ -98,21 +98,18 @@ module FileReader
         case chart_key[:type]
 
         when :A
-          # a = y.data[data_type][interval_index]
-          # b = y.data[data_type][interval_index]
-          # 
-          # c = x.data[data_type][interval_index]
-          # d = x.data[data_type][interval_index]
-          # 
-          # #todo: handle divide by zero 
-          # r
-          # a/(b * 1.0) <=> c/(d * 1.0)
+          a = y.data[chart_key[:stats][0]][interval_index]
+          b = y.data[chart_key[:stats][1]][interval_index]
+          
+          c = x.data[chart_key[:stats][0]][interval_index]
+          d = x.data[chart_key[:stats][1]][interval_index]
+          
+          #todo: handle divide by zero? doesn't blow up with 
+          a/(b * 1.0) <=> c/(d * 1.0)
         when :B
-          data_type = selected_data
           y.data[data_type][interval_index] <=> x.data[data_type][interval_index]
         when :C
           data_type = chart_key[:stats][0]
-          puts data_type
           y.data[data_type][interval_index] <=> x.data[data_type][interval_index]
         end
       end
@@ -120,10 +117,6 @@ module FileReader
 
     sorted
   end
-  
-  
-  
-  
 
   #todo: doesn't handle if interval_index is there. (it pushes nil)
   def get_all_data(list, data_type, interval_index)

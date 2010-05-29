@@ -19,11 +19,9 @@ class TablesController < ApplicationController
     # sorted_tables = Table.sort(tables, @selected_sort, @selected_data, @selected_index)
     sorted_tables = Table.sort2(chart_key, tables, @selected_sort, @selected_data, @selected_index)
     
-    
 
-    # generic type C approch
-    data_array = Table.get_all_data(sorted_tables, @selected_data, @selected_index)
-    @chart = generate_chart(data_array, @selected_sort, @selected_index, @selected_data, @time_intervals, sorted_tables)
+    # generic type C chart approch
+    @chart = generate_chart(@selected_sort, @selected_index, @selected_data, @time_intervals, sorted_tables)
     @json_map = json_map(@chart)
     @html_map = generate_html_map(@json_map, sorted_tables)
     
