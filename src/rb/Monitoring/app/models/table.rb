@@ -30,7 +30,7 @@ class Table
     
   }
 
-  def self.get_data_types
+  def self.get_stat_types
     STATS_KEY.keys.sort {|a,b| a.to_s <=> b.to_s}.map {|d| d.to_s}
   end
   
@@ -62,7 +62,7 @@ class Table
                   # :memory_allocated,
                   # :disk_used
 
-  def get_data_names
+  def get_stat_names
     return [] unless self.data != {}
     names = self.data.keys.map {|k| k.to_s }
   end

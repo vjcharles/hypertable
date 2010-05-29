@@ -89,8 +89,8 @@ module FileReader
     sorted
   end
 
-  def sort2(chart_key, list, sort_type, selected_data, interval_index)
-    data_type = selected_data.to_sym
+  def sort2(chart_key, list, sort_type, selected_stat, interval_index)
+    data_type = selected_stat.to_sym
     sorted = list.sort { |x, y|       
       if sort_type == "name"
         x.id <=> y.id
@@ -119,7 +119,7 @@ module FileReader
   end
 
   #todo: doesn't handle if interval_index is there. (it pushes nil)
-  def get_all_data(list, data_type, interval_index)
+  def get_all_stats(list, data_type, interval_index)
     data = []
     list.each do |item|
       #todo: if data doesn't exist for the selected index, push a nil value or -1? No. All values will be present

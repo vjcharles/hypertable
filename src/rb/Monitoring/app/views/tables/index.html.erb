@@ -3,8 +3,8 @@
 <form method="get" action="/tables" >
 	
 	<b>Data types: </b> 
-	<% @data_types.each do |type| %>
-		<%= radio_button_tag "data_type", type, (@selected_data == type)  %><%= type.titleize %> &nbsp; &nbsp;		
+	<% @stat_types.each do |type| %>
+		<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= type.titleize %> &nbsp; &nbsp;		
 	<% end %>	
 	
 	<br />

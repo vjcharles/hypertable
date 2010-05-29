@@ -5,25 +5,25 @@ class TablesController < ApplicationController
     @time_intervals = FileReader::TIME_INTERVALS
     tables = Table.get_stats
 
-    # @data_types = tables[0].get_data_names.sort
-    @data_types = Table.get_data_types
+    # @stat_types = tables[0].get_stat_names.sort
+    @stat_types = Table.get_stat_types
     
     @sort_types = ["name", "data"] 
     
     @selected_sort = params[:sort_by] || "name" # default if no params in url
-    @selected_data = params[:data_type] || @data_types[0]
+    @selected_stat = params[:data_type] || @stat_types[0]
     @timestamp_index = params[:time_interval].blank? ? 2 : params[:time_interval].to_i # default interval at index 2 (10 minutes has interesting test data)
     
-    chart_key = Table.get_chart_type @selected_data
+    chart_key = Table.get_chart_type @selected_stat
 
-    # sorted_tables = Table.sort(tables, @selected_sort, @selected_data, @timestamp_index)
-    sorted_tables = Table.sort2(chart_key, tables, @selected_sort, @selected_data, @timestamp_index)
+    # sorted_tables = Table.sort(tables, @selected_sort, @selected_stat, @timestamp_index)
+    sorted_tables = Table.sort2(chart_key, tables, @selected_sort, @selected_stat, @timestamp_index)
 
     # generic type C chart approch
-    @chart = generate_chart(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_data)
+    @chart = generate_chart(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
 
     # dynamic charts
-    @chart = generate_chart2(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_data)
+    @chart = generate_chart2(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
 
 
     @json_map = json_map(@chart)

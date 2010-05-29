@@ -16,7 +16,7 @@ class RangeServer
                 :timestamps, 
                 :data
   
-  def get_data_names
+  def get_stat_names
     return [] unless self.data != {}
     names = self.data.keys.map {|k| k.to_s }
   end
