@@ -1,5 +1,6 @@
 module FileReader
   TIME_INTERVALS = [1, 5, 10]
+  
   #get stat view
   def get_system_totals
     list = self.get_stats
@@ -87,6 +88,42 @@ module FileReader
     } 
     sorted
   end
+
+  def sort2(chart_key, list, sort_type, selected_data, interval_index)
+    data_type = ""
+    sorted = list.sort { |x, y|       
+      if sort_type == "name"
+        x.id <=> y.id
+      elsif sort_type == "data"        
+        case chart_key[:type]
+
+        when :A
+          # a = y.data[data_type][interval_index]
+          # b = y.data[data_type][interval_index]
+          # 
+          # c = x.data[data_type][interval_index]
+          # d = x.data[data_type][interval_index]
+          # 
+          # #todo: handle divide by zero 
+          # r
+          # a/(b * 1.0) <=> c/(d * 1.0)
+        when :B
+          data_type = selected_data
+          y.data[data_type][interval_index] <=> x.data[data_type][interval_index]
+        when :C
+          data_type = chart_key[:stats][0]
+          puts data_type
+          y.data[data_type][interval_index] <=> x.data[data_type][interval_index]
+        end
+      end
+    } 
+
+    sorted
+  end
+  
+  
+  
+  
 
   #todo: doesn't handle if interval_index is there. (it pushes nil)
   def get_all_data(list, data_type, interval_index)

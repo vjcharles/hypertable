@@ -1,18 +1,15 @@
-#All google chart generation methods now live here (not the perm home for this module)
+#All google chart generation methods live here
 module GoogleChart
   
   # chart related functions
-  
-  #todo: clean this up. manually generated google chart (probably deleting google chart plugin soon...not needed)
   def generate_chart(data_array, selected_sort, selected_index, selected_data, time_interval, sorted_list)
     smallest = find_smallest(data_array)
     largest = find_largest(data_array)
     
     #todo: dynamically generate chart size
-    bar_width = 6
+    bar_width = 'a,0,10'
     chart_height = 170
     chart_width = 400
-    
     
     # handcrafted googlechart url
     chart = "http://chart.apis.google.com/chart?" + 
@@ -33,7 +30,7 @@ module GoogleChart
     end
     chart
   end
-  
+
   
   def json_map(chart)
     chart_map = URI.encode(chart + "&chof=json")
