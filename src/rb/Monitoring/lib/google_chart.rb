@@ -2,9 +2,10 @@
 module GoogleChart
   
   # chart related functions
-  def generate_chart(selected_sort, selected_index, selected_data, sorted_list)
+  def generate_chart(chart_key, sorted_list, selected_sort, timestamp_index, selected_data)
     time_interval = FileReader::TIME_INTERVALS
-    data_array = Table.get_all_data(sorted_list, selected_data, selected_index)    
+    data_array = Table.get_all_data(sorted_list, selected_data, timestamp_index)    
+    
     smallest = find_smallest(data_array)
     largest = find_largest(data_array)
     
@@ -26,16 +27,26 @@ module GoogleChart
       "chco=FF0000&" +
       "chbh=#{bar_width}&" #bar width.x 23px is default
     if selected_sort == "name"  
-      chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + ((time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'second')) #title
+      chart = chart + "chtt=#{selected_data.titleize}, sorted by #{selected_sort.titleize}|every " + ((time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'second')) #title
     else
-      chart = chart + "chtt=Sorted by #{selected_data.titleize}|every " + (time_interval[selected_index] > 1 ? "#{time_interval[selected_index]} minutes" : 'minute') #title
+      chart = chart + "chtt=Sorted by #{selected_data.titleize}|every " + (time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'minute') #title
     end
     chart
   end
 
   #todo: 2nd version of chart url creation.
-  def generate_chart2
-    
+  def generate_chart2(chart_key, sorted_list, selected_sort, timestamp_index, selected_data)
+    chart = "http://chart.apis.google.com/chart?"
+    case chart_key[:type]
+    when :A
+      puts "A"
+    when :B
+      puts "B"
+    when :C
+      puts "C"
+      chart = generate_chart(chart_key, sorted_list, selected_sort, timestamp_index, selected_data)
+    end 
+    chart
   end
   
   
@@ -72,8 +83,8 @@ module GoogleChart
   
   # used in view template and controller
   def map_name
-    return "generic_map_name" unless @selected_sort && @selected_data && @selected_index
-    return "#{@selected_sort}_#{@selected_data}_#{@selected_index}"
+    return "generic_map_name" unless @selected_sort && @selected_data && @timestamp_index
+    return "#{@selected_sort}_#{@selected_data}_#{@timestamp_index}"
   end
   
   
