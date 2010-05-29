@@ -1,6 +1,9 @@
 #All google chart generation methods live here
 module GoogleChart
-  DEFAULT_COLORS = "00DD00"
+  DEFAULT_COLOR = "00DD00"
+  DEFAULT_COLOR2 = "00BB00"
+  DEFAULT_COLOR3 = "00AA00"
+
   CRITICAL_COLOR = "FF0000"
   MODERATE_COLOR = "FFB90F"
 
@@ -15,7 +18,7 @@ module GoogleChart
     bar_width = "#{bar_width_or_scale},#{space_between_bars},#{space_between_groups}"
 
     # generates chart height.
-    chart_height = 100 + (
+    chart_height = 130 + (
                           bar_width_or_scale * chart_key[:stats].length + 
                           space_between_bars * (chart_key[:stats].length - 1)
                         ) * sorted_stats.length
@@ -24,7 +27,7 @@ module GoogleChart
     options = { 
       :chts =>"FF0000,15",
       :chxt => "x,y",
-      :chco => DEFAULT_COLORS,
+      :chco => DEFAULT_COLOR,
       :chbh => "#{bar_width}", #bar width.x 23px is default
       :chs => "#{chart_width}x#{chart_height}"  # size
     }
@@ -34,6 +37,9 @@ module GoogleChart
     else
       options[:chtt] = "Sorted by #{selected_stat.titleize}|every " + (time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'minute') #title
     end
+    
+    options[:chdl] = "#{(chart_key[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
+    options[:chdlp] = "tv"
 
 
     case chart_key[:type]
@@ -75,15 +81,43 @@ module GoogleChart
         elsif percent >= 80
           bar_colors.push MODERATE_COLOR
         else
-          bar_colors.push DEFAULT_COLORS
+          bar_colors.push DEFAULT_COLOR
         end
       end
       options[:chco] = bar_colors.join '|'
 
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhg", options)
+ 
+ 
     when :B
-      # puts "B"
+      puts "B"
+      # sorted_stats = Array.new(chart_key[:stats].length)
+      all_stats = []
+      chart_key[:stats].each do |stat|
+        all_stats.push Table.get_all_stats(sorted_stats, stat, timestamp_index)
+      end
 
+      smallest = find_smallest(all_stats)
+      largest = find_largest(all_stats)
+
+      stats = ChartValue.new(all_stats)
+
+      options[:chd] = "t:#{stats}"
+
+      options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
+      options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
+
+      chart_height += space_between_groups * (sorted_stats.length - 1)        
+      options[:chs] = "#{chart_width}x#{chart_height}"  # size
+
+      options[:chxl] = "1:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
+
+      options[:chco] = [DEFAULT_COLOR, DEFAULT_COLOR2, DEFAULT_COLOR3].join ',' 
+
+      chart = ChartURL.new("http://chart.apis.google.com/chart", "bhg", options)
+      
+      
+      
     when :C
       # puts "C"      
       stats_array = Table.get_all_stats(sorted_stats, selected_stat, timestamp_index)    
@@ -95,6 +129,9 @@ module GoogleChart
       options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
       options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
       options[:chxl] = "1:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
+
+      options.delete :chdl
+      options.delete :chdlp
 
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhs", options)
 

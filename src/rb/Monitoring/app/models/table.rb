@@ -16,6 +16,7 @@ class Table
     
     :cells_read => cells_read,
     :cells_written => cells_read,
+    
     :bloom_filter_accesses => bloom_filter_accesses,
     :bloom_filter_maybes => bloom_filter_accesses,
     

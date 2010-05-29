@@ -17,9 +17,10 @@ class TablesController < ApplicationController
     chart_key = Table.get_chart_type @selected_stat
 
     # sorted_tables = Table.sort(tables, @selected_sort, @selected_stat, @timestamp_index)
-    sorted_tables = Table.sort2(chart_key, tables, @selected_sort, @selected_stat, @timestamp_index)
+    sorted_tables = Table.sort(chart_key, tables, @selected_sort, @selected_stat, @timestamp_index)
 
     # dynamic charts
+    # pp chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat
     @chart = generate_chart(chart_key, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
 
     @json_map = json_map(@chart)

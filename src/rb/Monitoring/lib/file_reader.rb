@@ -76,20 +76,20 @@ module FileReader
   end
   
   
-  #todo: this doesn't handle stats with less than 3 indeces of values...
-  def sort(list, sort_type, data_type, interval_index)
-    sorted = list.sort { |x, y|       
-      if sort_type == "name"
-        x.id <=> y.id
-      elsif sort_type == "data"
-        y.data[:"#{data_type}"][interval_index] <=> x.data[:"#{data_type}"][interval_index]
-        #todo: ommit stat if no value for given index? or flag it somehow? 0
-      end
-    } 
-    sorted
-  end
+  # #todo: this doesn't handle stats with less than 3 indeces of values...
+  # def sort(list, sort_type, data_type, interval_index)
+  #   sorted = list.sort { |x, y|       
+  #     if sort_type == "name"
+  #       x.id <=> y.id
+  #     elsif sort_type == "data"
+  #       y.data[:"#{data_type}"][interval_index] <=> x.data[:"#{data_type}"][interval_index]
+  #       #todo: ommit stat if no value for given index? or flag it somehow? 0
+  #     end
+  #   } 
+  #   sorted
+  # end
 
-  def sort2(chart_key, list, sort_type, selected_stat, interval_index)
+  def sort(chart_key, list, sort_type, selected_stat, interval_index)
     data_type = selected_stat.to_sym
     sorted = list.sort { |x, y|       
       if sort_type == "name"
