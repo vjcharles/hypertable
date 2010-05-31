@@ -6,13 +6,14 @@ class Table
   PATH_TO_FILE = "../../../run/monitoring/"
   ORIGINAL_FILE_NAME = "table_stats.txt"
   COPY_FILE_NAME = "copy_of_#{@orig_file_name}"
+  UNIT = FileReader::UNIT
   
-  cells_read = {:type => :B, :stats => [:cells_read, :cells_written]}
-  bloom_filter_accesses = {:type => :B, :stats => [:bloom_filter_accesses, :bloom_filter_maybes]}
-  bloom_filter_memory = {:type => :B, :stats => [:bloom_filter_memory, :block_index_memory, :shadow_cache_memory]}
+  cells_read = {:type => :B, :stats => [:cells_read, :cells_written], :units => UNIT[:abs]}
+  bloom_filter_accesses = {:type => :B, :stats => [:bloom_filter_accesses, :bloom_filter_maybes], :units => UNIT[:abs]}
+  bloom_filter_memory = {:type => :B, :stats => [:bloom_filter_memory, :block_index_memory, :shadow_cache_memory], :units => UNIT[:bytes]}
   #data structure to determine graph types, and what graphs to display.
   STATS_KEY = {
-    :memory_used => {:type => :A, :stats => [:memory_used, :memory_allocated]},
+    :percent_memory_used => {:type => :A, :stats => [:memory_used, :memory_allocated], :units => UNIT[:percent]},
     
     :cells_read => cells_read,
     :cells_written => cells_read,
@@ -24,10 +25,13 @@ class Table
     :block_index_memory => bloom_filter_memory,
     :shadow_cache_memory => bloom_filter_memory,
 
-    :scans => {:type => :C, :stats => [:scans]},
-    :bloom_filter_false_positives => {:type => :C, :stats => [:bloom_filter_false_positives]},
-    :disk_used => {:type => :C, :stats => [:disk_used]}
-    
+    :scans => {:type => :C, :stats => [:scans], :units => UNIT[:ab]},
+    :bloom_filter_false_positives => {:type => :C, :stats => [:bloom_filter_false_positives], :units => UNIT[:ab]},
+    :disk_used => {:type => :C, :stats => [:disk_used], :units => UNIT[:bytes]},
+    :memory_used => {:type => :C, :stats => [:memory_used], :units => UNIT[:bytes]}, 
+
+    #todo: immutible
+    :memory_alocated => {:type => :C, :stats => [:memory_allocated], :units => UNIT[:bytes]}
   }
 
   def self.get_stat_types

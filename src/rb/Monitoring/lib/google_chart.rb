@@ -18,81 +18,72 @@ module GoogleChart
     bar_width = "#{bar_width_or_scale},#{space_between_bars},#{space_between_groups}"
 
     # generates chart height.
-    chart_height = 130 + (
+    chart_height = 110 + (
                           bar_width_or_scale * chart_key[:stats].length + 
                           space_between_bars * (chart_key[:stats].length - 1)
                         ) * sorted_stats.length
+                        
+                        
     chart_width = 400
     
     options = { 
       :chts =>"FF0000,15",
-      :chxt => "x,y",
+      :chxt => "x,x,y",
       :chco => DEFAULT_COLOR,
       :chbh => "#{bar_width}", #bar width.x 23px is default
       :chs => "#{chart_width}x#{chart_height}"  # size
     }
 
     if selected_sort == "name"  
-      pp selected_stat
-      options[:chtt] = "#{selected_stat.titleize}, sorted by #{selected_sort.titleize}|every " + ((time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'second')) #title
+      # options[:chtt] = "#{selected_stat.titleize}, sorted by #{selected_sort.titleize}|#{time_interval[timestamp_index]} minute average" #title
+      options[:chtt] = "#{time_interval[timestamp_index]} minute average" #title
     else
-      options[:chtt] = "Sorted by #{selected_stat.titleize}|every " + (time_interval[timestamp_index] > 1 ? "#{time_interval[timestamp_index]} minutes" : 'minute') #title
+      # options[:chtt] = "Sorted by #{selected_stat.titleize}|#{time_interval[timestamp_index]} minute average" #title
+      options[:chtt] = "#{time_interval[timestamp_index]} minute average" #title
     end
-    
+
+    options[:chxp] = "1,50"  
+    options[:chxl] = "1:|#{chart_key[:units]}|"
+    options[:chxl] += "2:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
     options[:chdl] = "#{(chart_key[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
     options[:chdlp] = "tv"
 
-
     case chart_key[:type]
     when :A
-      # puts "A"
+      puts "A"
       # chd = chart data
       x_stats = Table.get_all_stats(sorted_stats, chart_key[:stats][0], timestamp_index)
       y_stats = Table.get_all_stats(sorted_stats, chart_key[:stats][1], timestamp_index)
-      smallest = find_smallest([x_stats, y_stats])
-      largest = find_largest([x_stats, y_stats])
-
+      # smallest = find_smallest([x_stats, y_stats])
+      # largest = find_largest([x_stats, y_stats])
       stats = ChartValue.new([x_stats, y_stats])
-
-      options[:chd] = "t:#{stats}"
-
-      options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
-      options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
-
-      chart_height += space_between_groups * (sorted_stats.length - 1)        
-      options[:chs] = "#{chart_width}x#{chart_height}"  # size
-
-      options[:chxl] = "1:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
-
       percents = Array.new(x_stats.length)
-      percents_strings = Array.new(x_stats.length)
       x_stats.each_with_index { |x, i| 
         percents[i] = round_to(x / (y_stats[i] * 1.0), 4) * 100
-        percents_strings[i] = percents[i].to_s + "%"
       }
-      percents
-      percents_strings.reverse!
-      options[:chxt] = "x,y,r"
-      options[:chxl] += "|2:|#{percents_strings.join '|'}"
+      # pp stats, "percents", percents
+      largest = 100
+      smallest = 0        
+      options[:chd] = "t:#{percents.join ','}"
+      
+      options[:chds] = "#{smallest},#{largest}" #todo: this breaks with 1 data point, or when all are same value.
+      options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
 
-      bar_colors = []
-      percents.each do |percent|
-        if percent >= 95
-          bar_colors.push CRITICAL_COLOR
-        elsif percent >= 80
-          bar_colors.push MODERATE_COLOR
-        else
-          bar_colors.push DEFAULT_COLOR
-        end
-      end
-      options[:chco] = bar_colors.join '|'
+      chart_height = 110 + (
+                            bar_width_or_scale +
+                            space_between_bars
+                          ) * sorted_stats.length        
+      options[:chs] = "#{chart_width}x#{chart_height}" # size
+      options[:chco] = "#{DEFAULT_COLOR}"
 
-      chart = ChartURL.new("http://chart.apis.google.com/chart", "bhg", options)
+      options[:chdl] = "#{selected_stat.titleize}"
+      options[:chdlp] = "tv"
+
+      chart = ChartURL.new("http://chart.apis.google.com/chart", "bho", options)
  
  
     when :B
       puts "B"
-      # sorted_stats = Array.new(chart_key[:stats].length)
       all_stats = []
       chart_key[:stats].each do |stat|
         all_stats.push Table.get_all_stats(sorted_stats, stat, timestamp_index)
@@ -108,32 +99,30 @@ module GoogleChart
       options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
       options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
 
-      chart_height += space_between_groups * (sorted_stats.length - 1)        
+      chart_height += space_between_groups * (sorted_stats.length - 1) + chart_key[:stats].length * 10
+           
       options[:chs] = "#{chart_width}x#{chart_height}"  # size
-
-      options[:chxl] = "1:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
-
-      options[:chco] = [DEFAULT_COLOR, DEFAULT_COLOR2, DEFAULT_COLOR3].join ',' 
+      options[:chco] = "#{DEFAULT_COLOR},#{DEFAULT_COLOR2},#{DEFAULT_COLOR3}" 
 
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhg", options)
       
-      
-      
     when :C
-      # puts "C"      
-      stats_array = Table.get_all_stats(sorted_stats, selected_stat, timestamp_index)    
+      puts "C"      
+      stats_array = Table.get_all_stats(sorted_stats, chart_key[:stats][0], timestamp_index)    
 
-      smallest = find_smallest(stats_array)
+      options[:chdl] = "#{selected_stat.titleize}"
+      options[:chdlp] = "tv"
+
+      # smallest = find_smallest(stats_array)
       largest = find_largest(stats_array)
-      
+      if (selected_stat.include? "percent") 
+        # largest = find_largest(stats_array) * 100
+        largest = 100
+        stats_array.map! {|stat| stat *= 100 } #values are floats
+      end
       options[:chd] = "t:#{stats_array.join(',')}"
-      options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
-      options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
-      options[:chxl] = "1:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
-
-      options.delete :chdl
-      options.delete :chdlp
-
+      options[:chds] = "#{0},#{largest}" # scale #TODO: this breaks with 1 data point
+      options[:chxr] = "0,#{0},#{largest}" # values to be listed (high and low)
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhs", options)
 
     end 
@@ -162,13 +151,15 @@ module GoogleChart
         item = sorted_stats.reverse[index.to_i]
         title = item.id  #this may be an actual name later
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title) #title is also id right now. todo: better way to determine the path?
-      elsif area["name"] =~ /bar0_(.+)/
+        map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
+      elsif (area["name"] =~ /bar.+_(.+)/)
         index = $1
         item = sorted_stats[index.to_i]
         title = item.id 
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title)  #todo: better way to determine path?
-      end      
-      map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
+        map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
+      end   
+      # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
     end
     map += "</map>\n"
   end

@@ -1,6 +1,16 @@
 module FileReader
   TIME_INTERVALS = [1, 5, 10]
-  
+  UNIT = {
+      :kbps => "KBps", 
+      :rwps => "Reads and Writes per second", 
+      :bytes => "Bytes", 
+      :kb => "KB", 
+      :loadave => "measure of waiting proc in proc queue",
+      :abs => "absolute numbers",
+      :ab => "absolute number",
+      :percent => "%"
+    }
+    
   #get stat view
   def get_system_totals
     list = self.get_stats
@@ -9,7 +19,7 @@ module FileReader
       t.data.each do |key, value|
         data[key] = Array.new(value.length) unless data[key]
         value.each_with_index do |v, i|
-          data[key][i] = data[key][i].to_i + v unless (v == nil || v == -1)
+          data[key][i] = data[key][i].to_f + v unless (v == nil || v == -1)
         end
       end
     end
@@ -56,7 +66,7 @@ module FileReader
           list.push current_stat
         elsif line =~ /^\t(.+)=(.+)/
           key = :"#{$1}"
-          values = $2.split(",").map! { |v| v.to_i } #data can be floats
+          values = $2.split(",").map! { |v| v.to_f } #data can be floats
           # values = $2.split(",") #data can be floats
           if key == :Timestamps
             current_stat.timestamps = values
@@ -65,7 +75,6 @@ module FileReader
           end
         end
       end
-      #todo: file doesn't appear to be reloaded if modifed externally
       file.close
       File.delete("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}")
     rescue
@@ -104,7 +113,14 @@ module FileReader
           c = x.data[chart_key[:stats][0]][interval_index]
           d = x.data[chart_key[:stats][1]][interval_index]
           #todo: handle divide by zero? doesn't blow up with 
-          a/(b * 1.0) <=> c/(d * 1.0)
+
+          # special case for :disk_available
+          if data_type == :disk_used
+            (b - a)/(b * 1.0) <=> (d - c)/(d * 1.0)
+          else
+            a/(b * 1.0) <=> c/(d * 1.0)
+          end
+
         when :B
           y.data[data_type][interval_index] <=> x.data[data_type][interval_index]
         when :C
@@ -113,7 +129,7 @@ module FileReader
         end
       end
     } 
-
+    # pp sorted.map{|s| s.data[data_type]}, chart_key[:type], chart_key, sort_type, data_type, interval_index
     sorted
   end
 
