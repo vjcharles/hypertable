@@ -158,7 +158,7 @@ module GoogleChart
       href = ""
       item = ""
       
-      if area["name"] =~ /axis1_(.+)/
+      if area["name"] =~ /axis2_(.+)/
         index = $1
         item = sorted_stats.reverse[index.to_i]
         title = item.id  #this may be an actual name later

@@ -4,7 +4,7 @@
 	
 	<b>Data types: </b> 
 	<% @stat_types.each do |type| %>
-		<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= pretty_titleize type %> &nbsp; &nbsp;		
+		<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= RangeServer.pretty_titleize type %> &nbsp; &nbsp;		
 	<% end %>	
 	
 	<br />

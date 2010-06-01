@@ -67,7 +67,14 @@ module FileReader
           list.push current_stat
         elsif line =~ /^\t(.+)=(.+)/
           key = :"#{$1}"
-          values = $2.split(",").map! { |v| v.to_f } #data can be floats
+          values = $2.split(",").map! do |v|
+            if v =~ /\./
+              v.to_f  #data can be floats
+            else
+              v.to_i
+            end
+          end
+          
           # values = $2.split(",") #data can be floats
           if key == :Timestamps
             current_stat.timestamps = values
@@ -144,9 +151,16 @@ module FileReader
     end
     data
   end
-  
-  # def get_all_names(list)
-  #   names = list.map {|t| t.id }
-  # end
+
+  def pretty_titleize(title)
+    t = title.titleize
+    if t =~ /K Bps/
+      return title.titleize.gsub!(/K Bps/,"KBps") 
+    elsif t =~ /Cpu/
+      return title.titleize.gsub!(/Cpu/,"CPU") 
+    else
+      return title.titleize
+    end
+  end
   
 end
