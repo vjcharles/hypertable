@@ -43,7 +43,7 @@ module GoogleChart
     options[:chxl] = "1:|#{chart_type[:units]}|"
     options[:chxl] += "2:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
     options[:chdl] = "#{(chart_type[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
-    options[:chdlp] = "tv"
+    options[:chdlp] = "tv"    
 
     case chart_type[:type]
     when :A
@@ -69,11 +69,11 @@ module GoogleChart
  
       chart_height = calculate_chart_height chart_type, sorted_stats.length
 
-      options[:chs] = "#{chart_width}x#{chart_height}" # size
       options[:chco] = "#{DEFAULT_COLOR}"
 
       options[:chdl] = "#{selected_stat.titleize}"
       options[:chdlp] = "tv"
+      options[:chs] = "#{chart_width}x#{chart_height}" # size
 
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bho", options)
  
@@ -99,8 +99,8 @@ module GoogleChart
 
       chart_height = calculate_chart_height chart_type, sorted_stats.length
            
-      options[:chs] = "#{chart_width}x#{chart_height}"  # size
       options[:chco] = "#{DEFAULT_COLOR},#{DEFAULT_COLOR2},#{DEFAULT_COLOR3}" 
+      options[:chs] = "#{chart_width}x#{chart_height}" # size
 
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhg", options)
       
@@ -129,6 +129,8 @@ module GoogleChart
       options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
             
       options[:chd] = "t:#{stats_array.join(',')}"
+
+      options[:chs] = "#{chart_width}x#{chart_height}" # size
 
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhs", options)
 
@@ -192,8 +194,13 @@ module GoogleChart
   
   def calculate_chart_height chart_type, list_size
     padding = chart_type[:chart_options][:padding]
+    legend_height = chart_type[:chart_options][:legend_height]
+    legend_height = legend_height * chart_type[:stats].length
     bar_group_height = get_bar_group_height chart_type
-    chart_height = bar_group_height * list_size + padding
+    chart_height = bar_group_height * list_size + padding + legend_height
+    
+    pp "HO", legend_height, bar_group_height, chart_height
+    
     chart_height > 750 ? 750 : chart_height
   end
 
@@ -212,10 +219,10 @@ module GoogleChart
 
     elsif chart_type[:type] == :B
       bars_per_stat = chart_type[:stats].length
-      legend_height *= bars_per_stat
       space_between_bars *= bars_per_stat - 1
     end
-    bar_group_height = bars_per_stat * (bar_width_or_scale + space_between_bars) + space_between_bars
+    bar_group_height = bars_per_stat * bar_width_or_scale + space_between_groups + space_between_bars
+
   end
   
 end
