@@ -12,6 +12,10 @@ module FileReader
       :mhz => "Mhz"
     }
     
+    CHART_A_OPTIONS = {:padding => 0, :legend_height => 10, :bar_width_or_scale => 10, :space_between_bars => 2, :space_between_groups => 2}
+    CHART_B_OPTIONS = {:padding => 0, :legend_height => 10, :bar_width_or_scale => 10, :space_between_bars => 2, :space_between_groups => 2}
+    CHART_C_OPTIONS = {:padding => 0, :legend_height => 10, :bar_width_or_scale => 10, :space_between_bars => 2, :space_between_groups => 2}
+    
   #get stat view
   def get_system_totals
     list = self.get_stats
@@ -91,20 +95,6 @@ module FileReader
     # return the array of list populated with data.
     return list
   end
-  
-  
-  # #todo: this doesn't handle stats with less than 3 indeces of values...
-  # def sort(list, sort_type, data_type, interval_index)
-  #   sorted = list.sort { |x, y|       
-  #     if sort_type == "name"
-  #       x.id <=> y.id
-  #     elsif sort_type == "data"
-  #       y.data[:"#{data_type}"][interval_index] <=> x.data[:"#{data_type}"][interval_index]
-  #       #todo: ommit stat if no value for given index? or flag it somehow? 0
-  #     end
-  #   } 
-  #   sorted
-  # end
 
   def sort(chart_key, list, sort_type, selected_stat, interval_index)
     data_type = selected_stat.to_sym

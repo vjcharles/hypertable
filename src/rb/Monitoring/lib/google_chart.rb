@@ -8,21 +8,18 @@ module GoogleChart
   MODERATE_COLOR = "FFB90F"
 
   #todo: 2nd version of chart url creation.
-  def generate_chart(chart_key, sorted_stats, selected_sort, timestamp_index, selected_stat)
+  def generate_chart(chart_type, sorted_stats, selected_sort, timestamp_index, selected_stat)
     chart = ChartURL.new
 
     time_interval = FileReader::TIME_INTERVALS
-    bar_width_or_scale = 12
-    space_between_bars = 2
-    space_between_groups = 10
+    
+    bar_width_or_scale = chart_type[:chart_options][:bar_width_or_scale] || 10
+    space_between_bars = chart_type[:chart_options][:space_between_bars] || 2
+    space_between_groups = chart_type[:chart_options][:space_between_groups] || 8
+    
     bar_width = "#{bar_width_or_scale},#{space_between_bars},#{space_between_groups}"
-
-    # generates chart height.
-    chart_height = 110 + (
-                          bar_width_or_scale * chart_key[:stats].length + 
-                          space_between_bars * (chart_key[:stats].length - 1)
-                        ) * sorted_stats.length
-                        
+    
+    chart_height = calculate_chart_height chart_type, sorted_stats.length
                         
     chart_width = 400
     
@@ -43,18 +40,18 @@ module GoogleChart
     end
 
     options[:chxp] = "1,50"  
-    options[:chxl] = "1:|#{chart_key[:units]}|"
+    options[:chxl] = "1:|#{chart_type[:units]}|"
     options[:chxl] += "2:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
-    options[:chdl] = "#{(chart_key[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
+    options[:chdl] = "#{(chart_type[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
     options[:chdlp] = "tv"
 
-    case chart_key[:type]
+    case chart_type[:type]
     when :A
       puts "A"
       #for percents only
       # chd = chart data
-      x_stats = Table.get_all_stats(sorted_stats, chart_key[:stats][0], timestamp_index)
-      y_stats = Table.get_all_stats(sorted_stats, chart_key[:stats][1], timestamp_index)
+      x_stats = Table.get_all_stats(sorted_stats, chart_type[:stats][0], timestamp_index)
+      y_stats = Table.get_all_stats(sorted_stats, chart_type[:stats][1], timestamp_index)
       # smallest = find_smallest([x_stats, y_stats])
       # largest = find_largest([x_stats, y_stats])
       stats = ChartValue.new([x_stats, y_stats])
@@ -69,11 +66,9 @@ module GoogleChart
       
       options[:chds] = "#{smallest},#{largest}" #todo: this breaks with 1 data point, or when all are same value.
       options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
+ 
+      chart_height = calculate_chart_height chart_type, sorted_stats.length
 
-      chart_height = 110 + (
-                            bar_width_or_scale +
-                            space_between_bars
-                          ) * sorted_stats.length        
       options[:chs] = "#{chart_width}x#{chart_height}" # size
       options[:chco] = "#{DEFAULT_COLOR}"
 
@@ -86,7 +81,7 @@ module GoogleChart
     when :B
       puts "B"
       all_stats = []
-      chart_key[:stats].each do |stat|
+      chart_type[:stats].each do |stat|
         #todo: hack, converting all data to ints. need to scale data instead
         all_stats.push Table.get_all_stats(sorted_stats, stat, timestamp_index).map {|stat| stat = stat.to_i}
       end
@@ -102,7 +97,7 @@ module GoogleChart
       options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
       options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
 
-      chart_height += space_between_groups * (sorted_stats.length - 1) + chart_key[:stats].length * 10
+      chart_height = calculate_chart_height chart_type, sorted_stats.length
            
       options[:chs] = "#{chart_width}x#{chart_height}"  # size
       options[:chco] = "#{DEFAULT_COLOR},#{DEFAULT_COLOR2},#{DEFAULT_COLOR3}" 
@@ -111,7 +106,7 @@ module GoogleChart
       
     when :C
       puts "C"      
-      stats_array = Table.get_all_stats(sorted_stats, chart_key[:stats][0], timestamp_index)    
+      stats_array = Table.get_all_stats(sorted_stats, chart_type[:stats][0], timestamp_index)    
 
       options[:chdl] = "#{selected_stat.titleize}"
       options[:chdlp] = "tv"
@@ -150,7 +145,7 @@ module GoogleChart
     return chart_map
   end
   
-  def generate_html_map(json_map, sorted_stats, chart_key, timestamp_index)
+  def generate_html_map(json_map, sorted_stats, chart_type, timestamp_index)
     map = "<map name=#{map_name}>\n"
     json_map["chartshape"].each do |area|
       #axes and bars: title and href
@@ -166,10 +161,10 @@ module GoogleChart
         map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
       elsif (area["name"] =~ /bar(.+)_(.+)/)
         index_of_data = $1.to_i
-        chart_key
+        chart_type
         index = $2.to_i
         item = sorted_stats[index.to_i]
-        value = item.data[chart_key[:stats][index_of_data]][timestamp_index]
+        value = item.data[chart_type[:stats][index_of_data]][timestamp_index]
         title = item.id
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title)  #todo: better way to determine path?
         # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}: #{value}'>\n"
@@ -186,6 +181,42 @@ module GoogleChart
     return "#{@selected_sort}_#{@selected_stat}_#{@timestamp_index}"
   end
   
+  def max_elements_in_chart chart_type, height=750
+    padding = chart_type[:chart_options][:padding]
+    legend_height = chart_type[:chart_options][:legend_height]
+
+    bar_group_height = get_bar_group_height chart_type    
+    area_for_bars = height - padding - legend_height
+    max_elements = (area_for_bars / bar_group_height).floor
+  end
+  
+  def calculate_chart_height chart_type, list_size
+    padding = chart_type[:chart_options][:padding]
+    bar_group_height = get_bar_group_height chart_type
+    chart_height = bar_group_height * list_size + padding
+    chart_height > 750 ? 750 : chart_height
+  end
+
+  private
+  def get_bar_group_height chart_type
+    bar_width_or_scale = chart_type[:chart_options][:bar_width_or_scale]
+    space_between_bars = chart_type[:chart_options][:space_between_bars]
+    space_between_groups = chart_type[:chart_options][:space_between_groups]
+    legend_height = chart_type[:chart_options][:legend_height]
+
+    bars_per_stat = 0
+
+    if chart_type[:type] == :A || chart_type[:type] == :C
+      bars_per_stat = 1 #1 element per stat
+      space_between_groups = 0 #because not grouped                    
+
+    elsif chart_type[:type] == :B
+      bars_per_stat = chart_type[:stats].length
+      legend_height *= bars_per_stat
+      space_between_bars *= bars_per_stat - 1
+    end
+    bar_group_height = bars_per_stat * (bar_width_or_scale + space_between_bars) + space_between_bars
+  end
   
 end
 
@@ -236,6 +267,7 @@ class ChartValue
     @values.map{|a| a = a.join ","}.join "|"
   end
 end
+
 
 ##random utilities
 def round_to(val, x)

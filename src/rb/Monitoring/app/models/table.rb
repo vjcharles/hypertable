@@ -7,13 +7,17 @@ class Table
   ORIGINAL_FILE_NAME = "table_stats.txt"
   COPY_FILE_NAME = "copy_of_#{@orig_file_name}"
   UNIT = FileReader::UNIT
+  CHART_A_OPTIONS = FileReader::CHART_A_OPTIONS
+  CHART_B_OPTIONS = FileReader::CHART_B_OPTIONS
+  CHART_C_OPTIONS = FileReader::CHART_C_OPTIONS
   
-  cells_read = {:type => :B, :stats => [:cells_read, :cells_written], :units => UNIT[:abs]}
-  bloom_filter_accesses = {:type => :B, :stats => [:bloom_filter_accesses, :bloom_filter_maybes], :units => UNIT[:abs]}
-  bloom_filter_memory = {:type => :B, :stats => [:bloom_filter_memory, :block_index_memory, :shadow_cache_memory], :units => UNIT[:bytes]}
+  
+  cells_read = {:type => :B, :stats => [:cells_read, :cells_written], :chart_options => CHART_B_OPTIONS, :units => UNIT[:abs]}
+  bloom_filter_accesses = {:type => :B, :stats => [:bloom_filter_accesses, :bloom_filter_maybes], :chart_options => CHART_B_OPTIONS, :units => UNIT[:abs]}
+  bloom_filter_memory = {:type => :B, :stats => [:bloom_filter_memory, :block_index_memory, :shadow_cache_memory], :chart_options => CHART_B_OPTIONS, :units => UNIT[:bytes]}
   #data structure to determine graph types, and what graphs to display.
   STATS_KEY = {
-    :percent_memory_used => {:type => :A, :stats => [:memory_used, :memory_allocated], :units => UNIT[:percent]},
+    :percent_memory_used => {:type => :A, :stats => [:memory_used, :memory_allocated], :chart_options => CHART_A_OPTIONS, :units => UNIT[:percent]},
     
     :cells_read => cells_read,
     :cells_written => cells_read,
@@ -25,13 +29,13 @@ class Table
     :block_index_memory => bloom_filter_memory,
     :shadow_cache_memory => bloom_filter_memory,
 
-    :scans => {:type => :C, :stats => [:scans], :units => UNIT[:ab]},
-    :bloom_filter_false_positives => {:type => :C, :stats => [:bloom_filter_false_positives], :units => UNIT[:ab]},
-    :disk_used => {:type => :C, :stats => [:disk_used], :units => UNIT[:bytes]},
-    :memory_used => {:type => :C, :stats => [:memory_used], :units => UNIT[:bytes]}, 
+    :scans => {:type => :C, :stats => [:scans], :chart_options => CHART_C_OPTIONS, :units => UNIT[:ab]},
+    :bloom_filter_false_positives => {:type => :C, :stats => [:bloom_filter_false_positives], :chart_options => CHART_C_OPTIONS, :units => UNIT[:ab]},
+    :disk_used => {:type => :C, :stats => [:disk_used], :chart_options => CHART_C_OPTIONS, :units => UNIT[:bytes]},
+    :memory_used => {:type => :C, :stats => [:memory_used], :chart_options => CHART_C_OPTIONS, :units => UNIT[:bytes]}, 
 
     #todo: immutable
-    :memory_alocated => {:type => :C, :stats => [:memory_allocated], :units => UNIT[:bytes], :immutable => true}
+    :memory_alocated => {:type => :C, :stats => [:memory_allocated], :chart_options => CHART_C_OPTIONS, :units => UNIT[:bytes], :immutable => true}
   }
 
   def self.get_stat_types

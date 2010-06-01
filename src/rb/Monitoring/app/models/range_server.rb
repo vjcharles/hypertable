@@ -7,26 +7,29 @@ class RangeServer
   ORIGINAL_FILE_NAME = "rs_stats.txt"
   COPY_FILE_NAME = "copy_of_#{@orig_file_name}"
   UNIT = FileReader::UNIT
+  CHART_A_OPTIONS = FileReader::CHART_A_OPTIONS
+  CHART_B_OPTIONS = FileReader::CHART_B_OPTIONS
+  CHART_C_OPTIONS = FileReader::CHART_C_OPTIONS  
   
-  disk_read_KBps = {:type => :B, :stats => [:disk_read_KBps, :disk_write_KBps], :units => UNIT[:kbps]}
-  disk_read_rate = {:type => :B, :stats => [:disk_read_rate, :disk_write_rate], :units => UNIT[:rwps]}
-  net_recv_KBps = {:type => :B, :stats => [:net_recv_KBps, :net_send_KBps], :units => UNIT[:kbps]}
-  disk_read_KBps = {:type => :B, :stats => [:disk_read_KBps, :disk_write_KBps], :units => UNIT[:kbps]}
+  disk_read_KBps = {:type => :B, :stats => [:disk_read_KBps, :disk_write_KBps], :chart_options => CHART_B_OPTIONS, :units => UNIT[:kbps]}
+  disk_read_rate = {:type => :B, :stats => [:disk_read_rate, :disk_write_rate], :chart_options => CHART_B_OPTIONS, :units => UNIT[:rwps]}
+  net_recv_KBps = {:type => :B, :stats => [:net_recv_KBps, :net_send_KBps], :chart_options => CHART_B_OPTIONS, :units => UNIT[:kbps]}
+  disk_read_KBps = {:type => :B, :stats => [:disk_read_KBps, :disk_write_KBps], :chart_options => CHART_B_OPTIONS, :units => UNIT[:kbps]}
 
-  bytes_read = {:type => :B, :stats => [:bytes_read, :bytes_written], :units => UNIT[:bytes]}
-  query_cache_accesses = {:type => :B, :stats => [:query_cache_accesses, :query_cache_hits], :units => UNIT[:abs]}
-  loadavg_0 = {:type => :B, :stats => [:loadavg_0, :loadavg_1, :loadavg_2], :units => UNIT[:loadave]}
-  cells_read = {:type => :B, :stats => [:cells_read, :cells_written], :units => UNIT[:abs]}
-  scans = {:type => :B, :stats => [:scans, :syncs], :units => UNIT[:abs]}
-  block_cache_accesses = {:type => :B, :stats => [:block_cache_accesses, :block_cache_hits], :units => UNIT[:abs]}
+  bytes_read = {:type => :B, :stats => [:bytes_read, :bytes_written], :chart_options => CHART_B_OPTIONS, :units => UNIT[:bytes]}
+  query_cache_accesses = {:type => :B, :stats => [:query_cache_accesses, :query_cache_hits], :chart_options => CHART_B_OPTIONS, :units => UNIT[:abs]}
+  loadavg_0 = {:type => :B, :stats => [:loadavg_0, :loadavg_1, :loadavg_2], :chart_options => CHART_B_OPTIONS, :units => UNIT[:loadave]}
+  cells_read = {:type => :B, :stats => [:cells_read, :cells_written], :chart_options => CHART_B_OPTIONS, :units => UNIT[:abs]}
+  scans = {:type => :B, :stats => [:scans, :syncs], :chart_options => CHART_B_OPTIONS, :units => UNIT[:abs]}
+  block_cache_accesses = {:type => :B, :stats => [:block_cache_accesses, :block_cache_hits], :chart_options => CHART_B_OPTIONS, :units => UNIT[:abs]}
 
   #data structure to determine graph types, and meta data about each element
   STATS_KEY = {
     #type A
-    :percent_disk_used => {:type => :A, :stats => [:disk_used, :disk_available], :units => UNIT[:percent]},
-    :percent_mem_used => {:type => :A, :stats => [:mem_used, :mem_total], :units => UNIT[:percent]},
-    :percent_query_cache_memory_used => {:type => :A, :stats => [:query_cache_available_memory, :query_cache_max_memory], :units => UNIT[:percent]},    
-    :percent_block_cache_memory_used => {:type => :A, :stats => [:block_cache_available_memory, :block_cache_max_memory], :units => UNIT[:percent]},
+    :percent_disk_used => {:type => :A, :stats => [:disk_used, :disk_available], :chart_options => CHART_A_OPTIONS, :units => UNIT[:percent]},
+    :percent_mem_used => {:type => :A, :stats => [:mem_used, :mem_total], :chart_options => CHART_A_OPTIONS, :units => UNIT[:percent]},
+    :percent_query_cache_memory_used => {:type => :A, :stats => [:query_cache_available_memory, :query_cache_max_memory], :chart_options => CHART_A_OPTIONS, :units => UNIT[:percent]},    
+    :percent_block_cache_memory_used => {:type => :A, :stats => [:block_cache_available_memory, :block_cache_max_memory], :chart_options => CHART_A_OPTIONS, :units => UNIT[:percent]},
     
     #type B
     :disk_read_KBps => disk_read_KBps,
@@ -58,26 +61,26 @@ class RangeServer
     :block_cache_hits => block_cache_accesses, 
 
     # TYPE C
-    :virtual_machine_size => {:type => :C, :stats => [:vm_size], :units => UNIT[:kb]},
-    :virtual_machine_resident => {:type => :C, :stats => [:vm_resident], :units => UNIT[:kb]},
-    :updates => {:type => :C, :stats => [:updates], :units => UNIT[:ab]},
-    :cpu_percent => {:type => :C, :stats => [:cpu_pct], :units => UNIT[:percent]},
-    :block_cache_max_memory => {:type => :C, :stats => [:block_cache_max_memory], :units => UNIT[:bytes]},
+    :virtual_machine_size => {:type => :C, :stats => [:vm_size], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :virtual_machine_resident => {:type => :C, :stats => [:vm_resident], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :updates => {:type => :C, :stats => [:updates], :chart_options => CHART_C_OPTIONS, :units => UNIT[:ab]},
+    :cpu_percent => {:type => :C, :stats => [:cpu_pct], :chart_options => CHART_C_OPTIONS, :units => UNIT[:percent]},
+    :block_cache_max_memory => {:type => :C, :stats => [:block_cache_max_memory], :chart_options => CHART_C_OPTIONS, :units => UNIT[:bytes]},
     
     # also have type A percent from these
-    :disk_used => {:type => :C, :stats => [:disk_used], :units => UNIT[:kb]},
-    :mem_used => {:type => :C, :stats => [:mem_used], :units => UNIT[:kb]},
-    :query_cache_available_memory => {:type => :C, :stats => [:query_cache_available_memory], :units => UNIT[:kb]},
-    :query_cache_max_memory => {:type => :C, :stats => [:query_cache_max_memory], :units => UNIT[:kb]},
-    :block_cache_available_memory => {:type => :C, :stats => [:block_cache_available_memory], :units => UNIT[:kb]},
-    :block_cache_max_memory => {:type => :C, :stats => [:block_cache_max_memory], :units => UNIT[:kb]},
+    :disk_used => {:type => :C, :stats => [:disk_used], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :mem_used => {:type => :C, :stats => [:mem_used], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :query_cache_available_memory => {:type => :C, :stats => [:query_cache_available_memory], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :query_cache_max_memory => {:type => :C, :stats => [:query_cache_max_memory], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :block_cache_available_memory => {:type => :C, :stats => [:block_cache_available_memory], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
+    :block_cache_max_memory => {:type => :C, :stats => [:block_cache_max_memory], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb]},
 
     #todo: immutable 
-    :disk_available => {:type => :C, :stats => [:disk_available], :units => UNIT[:kb], :immutable => true},
-    :mem_total => {:type => :C, :stats => [:mem_total], :units => UNIT[:kb], :immutable => true},
-    :clock_mhz => {:type => :C, :stats => [:clock_mhz], :units => UNIT[:mhz], :immutable => true},
-    :num_cores => {:type => :C, :stats => [:num_cores], :units => UNIT[:ab], :immutable => true},
-    :num_ranges => {:type => :C, :stats => [:num_ranges], :units => UNIT[:ab], :immutable => true}
+    :disk_available => {:type => :C, :stats => [:disk_available], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb], :immutable => true},
+    :mem_total => {:type => :C, :stats => [:mem_total], :chart_options => CHART_C_OPTIONS, :units => UNIT[:kb], :immutable => true},
+    :clock_mhz => {:type => :C, :stats => [:clock_mhz], :chart_options => CHART_C_OPTIONS, :units => UNIT[:mhz], :immutable => true},
+    :num_cores => {:type => :C, :stats => [:num_cores], :chart_options => CHART_C_OPTIONS, :units => UNIT[:ab], :immutable => true},
+    :num_ranges => {:type => :C, :stats => [:num_ranges], :chart_options => CHART_C_OPTIONS, :units => UNIT[:ab], :immutable => true}
     
   }
 
