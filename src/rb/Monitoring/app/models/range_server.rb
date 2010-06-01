@@ -29,14 +29,14 @@ class RangeServer
     :percent_block_cache_memory_used => {:type => :A, :stats => [:block_cache_available_memory, :block_cache_max_memory], :units => UNIT[:percent]},
     
     #type B
-    :disk_reads => disk_read_KBps,
-    :disk_writes => disk_read_KBps,
+    :disk_read_KBps => disk_read_KBps,
+    :disk_write_KBps => disk_read_KBps,
     
     :disk_read_rate => disk_read_rate,
     :disk_write_rate => disk_read_rate,  
   
-    :net_receives => net_recv_KBps,
-    :net_sends => net_recv_KBps,  
+    :net_recv_KBps => net_recv_KBps,
+    :net_send_KBps => net_recv_KBps,  
   
     :bytes_read => bytes_read,
     :bytes_written => bytes_read,
@@ -73,8 +73,12 @@ class RangeServer
     :block_cache_max_memory => {:type => :C, :stats => [:block_cache_max_memory], :units => UNIT[:kb]},
 
     #todo: immutable 
-    :disk_available => {:type => :C, :stats => [:disk_available], :units => UNIT[:kb]},
-    :mem_total => {:type => :C, :stats => [:mem_total], :units => UNIT[:kb]}
+    :disk_available => {:type => :C, :stats => [:disk_available], :units => UNIT[:kb], :immutable => true},
+    :mem_total => {:type => :C, :stats => [:mem_total], :units => UNIT[:kb], :immutable => true},
+    :clock_mhz => {:type => :C, :stats => [:clock_mhz], :units => UNIT[:mhz], :immutable => true},
+    :num_cores => {:type => :C, :stats => [:num_cores], :units => UNIT[:ab], :immutable => true},
+    :num_ranges => {:type => :C, :stats => [:num_ranges], :units => UNIT[:ab], :immutable => true}
+    
   }
 
   def self.get_stat_types

@@ -16,11 +16,12 @@
 	
 	<br />
 	<br />
-	
-	<b>Time interval: </b>
-	<% @time_intervals.each_with_index do |interval, i| %>
-		<%= radio_button_tag "time_interval", i, (@timestamp_index == i) %><%= interval %> &nbsp; &nbsp;
-	<% end %>	
+	<%= @chart_key[:immutable] ? "<div class=opacity_half>" : "<div>" %>	
+		<b>Time interval: </b>
+		<% @time_intervals.each_with_index do |interval, i| %>
+			<%= radio_button_tag "time_interval", i, (@timestamp_index == i) %><%= interval %> &nbsp; &nbsp;
+		<% end %>	
+	</div>
 		
 	<br />
 	<br />	

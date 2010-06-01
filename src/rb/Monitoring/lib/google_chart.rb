@@ -51,6 +51,7 @@ module GoogleChart
     case chart_key[:type]
     when :A
       puts "A"
+      #for percents only
       # chd = chart data
       x_stats = Table.get_all_stats(sorted_stats, chart_key[:stats][0], timestamp_index)
       y_stats = Table.get_all_stats(sorted_stats, chart_key[:stats][1], timestamp_index)
@@ -86,16 +87,18 @@ module GoogleChart
       puts "B"
       all_stats = []
       chart_key[:stats].each do |stat|
-        all_stats.push Table.get_all_stats(sorted_stats, stat, timestamp_index)
+        #todo: hack, converting all data to ints. need to scale data instead
+        all_stats.push Table.get_all_stats(sorted_stats, stat, timestamp_index).map {|stat| stat = stat.to_i}
       end
 
       smallest = find_smallest(all_stats)
       largest = find_largest(all_stats)
 
       stats = ChartValue.new(all_stats)
-
+      
+      
       options[:chd] = "t:#{stats}"
-
+      
       options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
       options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
 
@@ -112,17 +115,26 @@ module GoogleChart
 
       options[:chdl] = "#{selected_stat.titleize}"
       options[:chdlp] = "tv"
-
+      
+      largest = find_largest(stats_array).to_i
+      smallest = find_smallest(stats_array).to_i
+      
       # smallest = find_smallest(stats_array)
       largest = find_largest(stats_array)
-      if (selected_stat.include? "percent") 
+      if (selected_stat.to_s.include? "percent") 
         # largest = find_largest(stats_array) * 100
         largest = 100
+        smallest = 0
         stats_array.map! {|stat| stat *= 100 } #values are floats
+      elsif largest < 100 #when do we want 0 as the starting point?
+        smallest = 0
+        stats_array.map! {|stat| stat = stat.to_i}
       end
+      options[:chds] = "#{smallest},#{largest}" # scale #TODO: this breaks with 1 data point
+      options[:chxr] = "0,#{smallest},#{largest}" # values to be listed (high and low)
+            
       options[:chd] = "t:#{stats_array.join(',')}"
-      options[:chds] = "#{0},#{largest}" # scale #TODO: this breaks with 1 data point
-      options[:chxr] = "0,#{0},#{largest}" # values to be listed (high and low)
+
       chart = ChartURL.new("http://chart.apis.google.com/chart", "bhs", options)
 
     end 
@@ -138,7 +150,7 @@ module GoogleChart
     return chart_map
   end
   
-  def generate_html_map(json_map, sorted_stats)
+  def generate_html_map(json_map, sorted_stats, chart_key, timestamp_index)
     map = "<map name=#{map_name}>\n"
     json_map["chartshape"].each do |area|
       #axes and bars: title and href
@@ -152,11 +164,15 @@ module GoogleChart
         title = item.id  #this may be an actual name later
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title) #title is also id right now. todo: better way to determine the path?
         map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
-      elsif (area["name"] =~ /bar.+_(.+)/)
-        index = $1
+      elsif (area["name"] =~ /bar(.+)_(.+)/)
+        index_of_data = $1.to_i
+        chart_key
+        index = $2.to_i
         item = sorted_stats[index.to_i]
-        title = item.id 
+        value = item.data[chart_key[:stats][index_of_data]][timestamp_index]
+        title = item.id
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title)  #todo: better way to determine path?
+        # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}: #{value}'>\n"
         map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
       end   
       # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"

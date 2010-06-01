@@ -6,4 +6,15 @@ module ApplicationHelper
     data.sort {|a,b| a.to_s <=> b.to_s }
   end
   
+  def pretty_titleize(title)
+    t = title.titleize
+    if t =~ /K Bps/
+      return title.titleize.gsub!(/K Bps/,"KBps") 
+    elsif t =~ /Cpu/
+      return title.titleize.gsub!(/Cpu/,"CPU") 
+    else
+      return title.titleize
+    end
+  end
+  
 end

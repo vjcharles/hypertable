@@ -4,7 +4,7 @@
 	
 	<b>Data types: </b> 
 	<% @stat_types.each do |type| %>
-		<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= type.titleize %> &nbsp; &nbsp;		
+		<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= pretty_titleize type %> &nbsp; &nbsp;		
 	<% end %>	
 	
 	<br />
@@ -16,11 +16,13 @@
 	
 	<br />
 	<br />
-	
-	<b>Time interval: </b>
-	<% @time_intervals.each_with_index do |interval, i| %>
-		<%= radio_button_tag "time_interval", i, (@timestamp_index == i) %><%= interval %> &nbsp; &nbsp;
-	<% end %>	
+	<%= @chart_key[:immutable] ? "<div class=opacity_half>" : "<div>" %>
+		<%= pp @chart_key %>
+		<b>Time interval: </b>
+		<% @time_intervals.each_with_index do |interval, i| %>
+			<%= radio_button_tag "time_interval", i, (@timestamp_index == i) %><%= interval %> &nbsp; &nbsp;
+		<% end %>	
+	</div>
 		
 	<br />
 	<br />	

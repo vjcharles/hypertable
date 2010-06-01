@@ -8,7 +8,8 @@ module FileReader
       :loadave => "measure of waiting proc in proc queue",
       :abs => "absolute numbers",
       :ab => "absolute number",
-      :percent => "%"
+      :percent => "%",
+      :mhz => "Mhz"
     }
     
   #get stat view
@@ -100,6 +101,7 @@ module FileReader
 
   def sort(chart_key, list, sort_type, selected_stat, interval_index)
     data_type = selected_stat.to_sym
+    puts data_type
     sorted = list.sort { |x, y|       
       if sort_type == "name"
         x.id <=> y.id

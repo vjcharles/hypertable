@@ -30,8 +30,8 @@ class Table
     :disk_used => {:type => :C, :stats => [:disk_used], :units => UNIT[:bytes]},
     :memory_used => {:type => :C, :stats => [:memory_used], :units => UNIT[:bytes]}, 
 
-    #todo: immutible
-    :memory_alocated => {:type => :C, :stats => [:memory_allocated], :units => UNIT[:bytes]}
+    #todo: immutable
+    :memory_alocated => {:type => :C, :stats => [:memory_allocated], :units => UNIT[:bytes], :immutable => true}
   }
 
   def self.get_stat_types

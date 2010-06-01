@@ -62,3 +62,7 @@ li .handle {
   color: #777;
 }
 
+/* Hypertable */
+.opacity_half {
+	opacity:0.5;
+}
