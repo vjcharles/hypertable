@@ -1,32 +1,37 @@
 <%= render :partial => "rs" %>
-
-<form method="get" action="/range_servers" >
-	
-	<b>Data types: </b> 
-	<% @stat_types.each do |type| %>
-		<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= RangeServer.pretty_titleize type %> &nbsp; &nbsp;		
-	<% end %>	
-	
-	<br />
-	<br />
-	<b>Sort by: </b> 
-	<% @sort_types.each do |type| %>
-		<%= radio_button_tag "sort_by", type, (@selected_sort == type)  %><%= type.titleize %> &nbsp; &nbsp;		
-	<% end %>	
-	
-	<br />
-	<br />
-	<%= @chart_type[:immutable] ? "<div class=opacity_half>" : "<div>" %>
-		<%= pp @chart_type %>
-		<b>Time interval: </b>
-		<% @time_intervals.each_with_index do |interval, i| %>
-			<%= radio_button_tag "time_interval", i, (@timestamp_index == i) %><%= interval %> &nbsp; &nbsp;
+<div class=form>
+	<form method="get" action="/range_servers" >
+		<b>Sort by</b>
+		<ul> 
+		<% @sort_types.each do |type| %>
+			<li>
+				<%= radio_button_tag "sort_by", type, (@selected_sort == type)  %><%= type.titleize %>
+			</li>	
 		<% end %>	
-	</div>
-		
-	<br />
-	<br />	
-	<%= submit_tag "update view" %>
-<%# end %>
+		</ul>
+	
+		<b>Time interval </b>
+		<%= @chart_type[:immutable] ? "<ul class=opacity_half>" : "<ul>" %>
+			<%= pp @chart_type %>
+				<% @time_intervals.each_with_index do |interval, i| %>
+					<li>
+						<%= radio_button_tag "time_interval", i, (@timestamp_index == i) %><%= interval %> &nbsp; &nbsp;
+					</li>
+				<% end %>	
+		</ul>
+		<b>Data types </b> 
+		<ul> 
+			<% @stat_types.each do |type| %>
+				<li>
+					<%= radio_button_tag "data_type", type, (@selected_stat == type)  %><%= RangeServer.pretty_titleize type %>
+			</li>
+			<% end %>	
+		</ul>
+	
+		<%= submit_tag "update view" %>
+	</form>
+</div>
 
-<%= render :partial => "data" %>
+<div class=graph>
+	<%= render :partial => "data" %>
+</div>

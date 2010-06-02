@@ -66,3 +66,17 @@ li .handle {
 .opacity_half {
 	opacity:0.5;
 }
+
+.form {
+	float: left;
+	width: 300px;
+	padding: 0 30px 0 0;
+}
+
+.graph {
+	display: inline-block;
+}
+
+.body {
+	display: inline-block;
+}

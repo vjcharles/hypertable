@@ -186,7 +186,9 @@ module GoogleChart
   def max_elements_in_chart chart_type, height=750
     padding = chart_type[:chart_options][:padding]
     legend_height = chart_type[:chart_options][:legend_height]
-
+    unless chart_type[:type] == :A || chart_type[:type] == :C
+      legend_height *= chart_type[:stats].length
+    end
     bar_group_height = get_bar_group_height chart_type    
     area_for_bars = height - padding - legend_height
     max_elements = (area_for_bars / bar_group_height).floor
@@ -195,12 +197,10 @@ module GoogleChart
   def calculate_chart_height chart_type, list_size
     padding = chart_type[:chart_options][:padding]
     legend_height = chart_type[:chart_options][:legend_height]
-    legend_height = legend_height * chart_type[:stats].length
+    legend_height *= chart_type[:stats].length
     bar_group_height = get_bar_group_height chart_type
     chart_height = bar_group_height * list_size + padding + legend_height
-    
-    pp "HO", legend_height, bar_group_height, chart_height
-    
+        
     chart_height > 750 ? 750 : chart_height
   end
 
@@ -209,7 +209,6 @@ module GoogleChart
     bar_width_or_scale = chart_type[:chart_options][:bar_width_or_scale]
     space_between_bars = chart_type[:chart_options][:space_between_bars]
     space_between_groups = chart_type[:chart_options][:space_between_groups]
-    legend_height = chart_type[:chart_options][:legend_height]
 
     bars_per_stat = 0
 

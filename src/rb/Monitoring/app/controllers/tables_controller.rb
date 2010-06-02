@@ -16,12 +16,10 @@ class TablesController < ApplicationController
     sorted_tables = Table.sort(@chart_type, tables, @selected_sort, @selected_stat, @timestamp_index)
 
     #todo: handle large charts better. currently will only show top ones (that fit in 1 graph)
-    max_size = max_elements_in_chart(@chart_type, 750)
+    max_size = max_elements_in_chart(@chart_type)
     
-    puts "HIII", sorted_tables.length
     #temp, throws away elements that won't fit on the graph
     sorted_tables = sorted_tables.slice(0..(max_size - 1))
-    puts sorted_tables.length
     
     # dynamic charts
     @chart = generate_chart(@chart_type, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)

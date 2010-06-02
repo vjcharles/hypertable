@@ -18,6 +18,13 @@ class RangeServersController < ApplicationController
     @chart_type = RangeServer.get_chart_type @selected_stat
     sorted_range_servers = RangeServer.sort(@chart_type, range_servers, @selected_sort, @selected_stat, @timestamp_index)
     
+    #todo: handle large charts better. currently will only show top ones (that fit in 1 graph)
+    max_size = max_elements_in_chart(@chart_type)
+    
+    #temp, throws away elements that won't fit on the graph
+    sorted_tables = sorted_range_servers.slice(0..(max_size - 1))
+    
+    
     # stats_array = RangeServer.get_all_stats(sorted_range_servers, @selected_stat, @timestamp_index)
     @chart = generate_chart(@chart_type, sorted_range_servers, @selected_sort, @timestamp_index, @selected_stat)
     
