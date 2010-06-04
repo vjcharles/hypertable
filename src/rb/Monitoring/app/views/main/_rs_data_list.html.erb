@@ -1,3 +1,6 @@
+<h4>Number of RangeServers <%= @range_servers.length %></h4>
+<h4>Number of Ranges <%= @range_servers.first.data[:num_ranges][0] %></h4>
+
 <table border="1"> 
 		<tr>
 			<th>Sums of All Range Server <br />KB/sec or absolute number <br />unless noted</th>
@@ -16,9 +19,5 @@
 					<td> <%= (key.to_s =~ /_memory/ ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
 				<% end %>
 		</tr>
-		<% end %>
-		
-		
-		
-		
+		<% end %>	
 </table>

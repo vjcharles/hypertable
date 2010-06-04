@@ -42,7 +42,8 @@ module GoogleChart
     options[:chxp] = "1,50"  
     options[:chxl] = "1:|#{chart_type[:units]}|"
     options[:chxl] += "2:|#{sorted_stats.map {|t| t.id }.reverse.map{|n| n.titleize}.join('|')}" #notice the order is reversed, put stat label here
-    options[:chdl] = "#{(chart_type[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
+    # options[:chdl] = "#{(chart_type[:stats].map {|stat| stat.to_s.titleize}).join '|'}"
+    options[:chdl] = "#{(chart_type[:stats].map {|stat| RangeServer.pretty_titleize stat}).join '|'}"
     options[:chdlp] = "tv"    
 
     case chart_type[:type]

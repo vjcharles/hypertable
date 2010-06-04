@@ -2,6 +2,8 @@ class MainController < ApplicationController
 
   def index
     @time_intervals = FileReader::TIME_INTERVALS
+    @tables = Table.get_stats
+    @range_servers = RangeServer.get_stats
     #via table data
     @table_timestamps, @table_system_totals = Table.get_system_totals
     
