@@ -46,6 +46,8 @@ module GoogleChart
     options[:chdlp] = "tv"    
 
     case chart_type[:type]
+
+    #todo: use get_value method here instead
     when :A
       puts "A"
       #for percents only
@@ -57,10 +59,10 @@ module GoogleChart
       stats = ChartValue.new([x_stats, y_stats])
       percents = Array.new(x_stats.length)
       x_stats.each_with_index { |x, i| 
-        percents[i] = round_to(x / (y_stats[i] * 1.0), 4) * 100
+        percents[i] = round_to(x / (y_stats[i] * 1.0), 4)
       }
       # pp stats, "percents", percents
-      largest = 100
+      largest = 1
       smallest = 0        
       options[:chd] = "t:#{percents.join ','}"
       
@@ -147,7 +149,7 @@ module GoogleChart
     return chart_map
   end
   
-  def generate_html_map(json_map, sorted_stats, chart_type, timestamp_index)
+  def generate_html_map(json_map, sorted_stats, selected_stat, timestamp_index)
     map = "<map name=#{map_name}>\n"
     json_map["chartshape"].each do |area|
       #axes and bars: title and href
@@ -163,14 +165,13 @@ module GoogleChart
         map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
       elsif (area["name"] =~ /bar(.+)_(.+)/)
         index_of_data = $1.to_i
-        chart_type
         index = $2.to_i
         item = sorted_stats[index.to_i]
-        value = item.data[chart_type[:stats][index_of_data]][timestamp_index]
+        value = item.get_value selected_stat, timestamp_index, true
         title = item.id
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title)  #todo: better way to determine path?
-        # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}: #{value}'>\n"
-        map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
+        map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}: #{value}'>\n"
+        # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
       end   
       # map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}'>\n"
     end

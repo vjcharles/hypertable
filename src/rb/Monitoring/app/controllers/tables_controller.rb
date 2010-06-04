@@ -38,6 +38,7 @@ class TablesController < ApplicationController
   def show
     @time_intervals = FileReader::TIME_INTERVALS
     @table = Table.get_stat params[:id]
+    @stat_types = Table.get_stat_types #array of symbols    
   end
 
 end

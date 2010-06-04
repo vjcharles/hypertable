@@ -102,10 +102,43 @@ class RangeServer
                 :timestamps, 
                 :data
   
-  def get_stat_names
-    return [] unless self.data != {}
-    names = self.data.keys.map {|k| k.to_s }
+  alias name id
+
+  # RangeServer.get_stats.first.get_value("num_ranges", 0, true)
+  #continue from here...
+  def get_value(data_name, time_index, show_units)
+    stat_key = STATS_KEY[:"#{data_name}"]
+    value = nil
+
+    case stat_key[:type]
+    when :A
+      #handle nil or of div by zero
+      value = self.data[stat_key[:stats][0]][time_index] / (self.data[stat_key[:stats][1]][time_index] * 1.0)
+      value = round_to(value, 4) * 100
+    when :B
+      value = self.data[stat_key[:stats][0]][time_index]
+    when :C
+      value = self.data[stat_key[:stats][0]][time_index]
+    else
+      value = ""
+    end
+    
+    if show_units
+      unit = stat_key[:units]
+      if unit == "%"
+        value.to_s + "#{stat_key[:units]}"
+      else
+        value.to_s + " #{stat_key[:units]}"
+      end
+    else
+      value
+    end    
   end
   
-  alias name id
+  #utiliity  
+  private
+  def round_to(val, x)
+    (val * 10**x).round.to_f / 10**x
+  end
+
 end

@@ -29,7 +29,7 @@ class RangeServersController < ApplicationController
     @chart = generate_chart(@chart_type, sorted_range_servers, @selected_sort, @timestamp_index, @selected_stat)
     
     @json_map = json_map(@chart)    
-    @html_map = generate_html_map(@json_map, sorted_range_servers, @chart_type, @timestamp_index)
+    @html_map = generate_html_map(@json_map, sorted_range_servers, @selected_stat, @timestamp_index)
     
     #todo: this selects the first table's timestamp.
     @time = Time.at sorted_range_servers.first.timestamps[@timestamp_index] / 10 ** 9
@@ -42,6 +42,7 @@ class RangeServersController < ApplicationController
   def show
     @time_intervals = FileReader::TIME_INTERVALS
     @range_server = RangeServer.get_stat params[:id]
+    @stat_types = RangeServer.get_stat_types #array of symbols
   end
     
 end

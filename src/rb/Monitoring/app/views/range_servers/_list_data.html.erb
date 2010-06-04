@@ -5,20 +5,21 @@
 			</th>
 		<% @range_server.timestamps.each_with_index do |ts, i| %>
 			<th>
-				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
-				at <%= (Time.at ts / 10 ** 9).strftime("%T") %>
+				<%= @time_intervals[i].to_s + " minute average" %> <br />at <%= (Time.at ts / 10 ** 9).strftime("%T") %>
 			</th>
 		<% end %>
 		</tr>			
 		<tr>	
 			
-		<% sort_data_hash(@range_server.data).each do |key, value| %>
+		<% @stat_types.each do |stat| %>
 			<td>
-				<%= key.to_s.titleize %>
+				<%= RangeServer.pretty_titleize stat %>
 			</td>
-				<% value.each do |v| %>
-					
-					<td> <%= (key == "shadow_cache_memory".to_sym ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
+						
+				<% @time_intervals.each_with_index do |interval, index| %>
+					<td>
+						<%= number_with_delimiter @range_server.get_value(stat, index, true) %>
+					</td>
 					
 				<% end %>
 		</tr>

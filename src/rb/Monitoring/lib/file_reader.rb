@@ -2,12 +2,12 @@ module FileReader
   TIME_INTERVALS = [1, 5, 10]
   UNIT = {
       :kbps => "KBps", 
-      :rwps => "Reads and Writes per second", 
+      :rwps => "Reads and Writes/sec", 
       :bytes => "Bytes", 
       :kb => "KB", 
-      :loadave => "measure of waiting proc in proc queue",
-      :abs => "absolute numbers",
-      :ab => "absolute number",
+      :loadave => "",# "measure of waiting proc in proc queue",
+      :abs => "",  #"absolute numbers",
+      :ab => "", #absolute number",
       :percent => "%",
       :mhz => "Mhz"
     }
