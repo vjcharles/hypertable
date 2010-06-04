@@ -2,7 +2,7 @@ module FileReader
   TIME_INTERVALS = [1, 5, 10]
   UNIT = {
       :kbps => "KBps", 
-      :rwps => "Reads and Writes/sec", 
+      :rwps => "per second", 
       :bytes => "Bytes", 
       :kb => "KB", 
       :loadave => "",# "measure of waiting proc in proc queue",
@@ -15,22 +15,33 @@ module FileReader
     CHART_A_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
     CHART_B_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
     CHART_C_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
-    
-  #get stat view
-  def get_system_totals list=nil
+  
+  def get_system_totals list=nil#, show_units=true
     list = list || self.get_stats
-    data = {}  
-    list.each do |t|
-      t.data.each do |key, value|
-        data[key] = Array.new(value.length) unless data[key]
-        value.each_with_index do |v, i|
-          data[key][i] = data[key][i].to_f + v unless (v == nil || v == -1)
+    
+    data = {}
+    stat_types = self.get_stat_types
+    list.each do |item|
+      stat_types.each do |stat|
+        data[:"#{stat}"] = Array.new(TIME_INTERVALS.length) unless data[:"#{stat}"]
+        TIME_INTERVALS.length.times do |i|
+          running_total = data[:"#{stat}"][i] || 0
+          data[:"#{stat}"][i] = running_total + item.get_value(stat, i, false)
+        end
+        if item == list.last && self::STATS_KEY[:"#{stat}"][:units] == "%"
+          TIME_INTERVALS.length.times do |i|
+            data[:"#{stat}"][i] = data[:"#{stat}"][i] / list.length # this assumes there are values for each stat
+            data[:"#{stat}"][i] = Table.round_to data[:"#{stat}"][i], 2
+          end
         end
       end
+      
     end
-    # data = data.sort { |a, b| a.to_s <=> b.to_s }
     [list.first.timestamps, data]
   end
+  
+  
+  
 
   # find just one. this could be optimized
   def get_stat uid
@@ -143,13 +154,13 @@ module FileReader
   end
 
   def pretty_titleize(title)
-    t = title.titleize
+    t = title.to_s.titleize
     if t =~ /K Bps/
-      return title.titleize.gsub!(/K Bps/,"KBps") 
+      return t.titleize.gsub!(/K Bps/,"KBps") 
     elsif t =~ /Cpu/
-      return title.titleize.gsub!(/Cpu/,"CPU") 
+      return t.titleize.gsub!(/Cpu/,"CPU") 
     else
-      return title.titleize
+      return t.titleize
     end
   end
   

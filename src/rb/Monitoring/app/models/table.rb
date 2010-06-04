@@ -103,9 +103,12 @@ class Table
     end    
   end
   
-  #utiliity  
-  private
-  def round_to(val, x)
+  def self.get_units(stat_name)
+    STATS_KEY[:"#{stat_name}"][:units]
+  end
+  
+  #utiliity
+  def self.round_to(val, x)
     (val * 10**x).round.to_f / 10**x
   end
   

@@ -1,9 +1,9 @@
-<h4>Number of RangeServers <%= @range_servers.length %></h4>
-<h4>Number of Ranges <%= @range_servers.first.data[:num_ranges][0] %></h4>
+<h4>Number of RangeServers <%= @range_servers.length %> OR 
+Number of Ranges <%= @range_servers.first.data[:num_ranges][0] %></h4>
 
 <table border="1"> 
 		<tr>
-			<th>Sums of All Range Server <br />KB/sec or absolute number <br />unless noted</th>
+			<th>Sums of All <%= link_to "Range Servers", range_servers_path %></th>
 		<% @rs_timestamps.each_with_index do |ts, i| %>
 			<th>
 				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
@@ -14,9 +14,12 @@
 		<tr>	
 			
 		<% sort_data_hash(@rs_system_totals).each do |key, value| %>
-			<td><%= (key.to_s =~ /_memory/ ? key.to_s.titleize + " GB" : key.to_s.titleize) %></td>
+			<td><%= RangeServer.pretty_titleize key.to_s.titleize %></td>
 				<% value.each do |v| %>
-					<td> <%= (key.to_s =~ /_memory/ ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
+					<td> 
+						<%= number_with_delimiter v %>
+						<%= RangeServer.get_units(key)%>
+					</td>
 				<% end %>
 		</tr>
 		<% end %>	

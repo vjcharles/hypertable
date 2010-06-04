@@ -105,7 +105,6 @@ class RangeServer
   alias name id
 
   # RangeServer.get_stats.first.get_value("num_ranges", 0, true)
-  #continue from here...
   def get_value(data_name, time_index, show_units)
     stat_key = STATS_KEY[:"#{data_name}"]
     value = nil
@@ -135,9 +134,12 @@ class RangeServer
     end    
   end
   
+  def self.get_units(stat_name)
+    STATS_KEY[:"#{stat_name}"][:units]
+  end
+  
   #utiliity  
-  private
-  def round_to(val, x)
+  def self.round_to(val, x)
     (val * 10**x).round.to_f / 10**x
   end
 

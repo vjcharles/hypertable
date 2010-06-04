@@ -1,7 +1,8 @@
 <h4>Number of Tables: <%= @tables.length %></h4>
+
 <table border="1"> 
 		<tr>
-			<th>Sums of All Tables <br />MB or absolute number <br /> unless noted otherwise </th>
+			<th>Sums of All <%= link_to "Tables", tables_path %></th>
 		<% @table_timestamps.each_with_index do |ts, i| %>
 			<th>
 				<%= @time_intervals[i].to_s + " minute" + (@time_intervals[i].to_i > 1 ? "s" : "")%>
@@ -12,10 +13,13 @@
 		<tr>	
 			
 		<% sort_data_hash(@table_system_totals).each do |key, value| %>
-			<td><%= (key == "shadow_cache_memory".to_sym ? key.to_s.titleize + " GB" : key.to_s.titleize) %></td>
+			<td><%= Table.pretty_titleize key.to_s.titleize %></td>
 				<% value.each do |v| %>
-					<td> <%= (key == "shadow_cache_memory".to_sym ? (number_with_delimiter v/1.gigabyte) : (number_with_delimiter v)) %></td>
+					<td> 
+						<%= number_with_delimiter v %>
+						<%= Table.get_units(key)%>
+					</td>
 				<% end %>
 		</tr>
-		<% end %>
+		<% end %>	
 </table>
