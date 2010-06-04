@@ -4,10 +4,9 @@ class MainController < ApplicationController
     @time_intervals = FileReader::TIME_INTERVALS
     @tables = Table.get_stats
     @range_servers = RangeServer.get_stats
-    #via table data
-    @table_timestamps, @table_system_totals = Table.get_system_totals
-    
-    @rs_timestamps, @rs_system_totals = RangeServer.get_system_totals
+
+    @table_timestamps, @table_system_totals = Table.get_system_totals @tables
+    @rs_timestamps, @rs_system_totals = RangeServer.get_system_totals @range_servers
     
     respond_to do |format|
       format.html # index.html.erb

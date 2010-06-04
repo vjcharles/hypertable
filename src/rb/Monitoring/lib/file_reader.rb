@@ -17,8 +17,8 @@ module FileReader
     CHART_C_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
     
   #get stat view
-  def get_system_totals
-    list = self.get_stats
+  def get_system_totals list=nil
+    list = list || self.get_stats
     data = {}  
     list.each do |t|
       t.data.each do |key, value|
