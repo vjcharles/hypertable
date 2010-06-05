@@ -54,6 +54,7 @@ module FileReader
   
   def get_stats(wait_time=2)
     list = []
+    using_new_file = true
 
     # repeats the copy for some given time.
     time_spent = 0
@@ -67,7 +68,12 @@ module FileReader
       if time_spent <= wait_time
         retry
       else
-        raise
+        #use old file if possible
+        if File.exists?("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}")
+          using_new_file = false
+        else
+          raise
+        end
       end
     end
 
@@ -99,7 +105,8 @@ module FileReader
         end
       end
       file.close
-      File.delete("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}")
+      #Uses old copied file if necessary
+      # File.delete("#{self::PATH_TO_FILE}#{self::COPY_FILE_NAME}")
     rescue
       raise
     end    

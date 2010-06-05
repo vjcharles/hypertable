@@ -25,7 +25,7 @@ class TablesController < ApplicationController
     @chart = generate_chart(@chart_type, sorted_tables, @selected_sort, @timestamp_index, @selected_stat)
 
     @json_map = json_map(@chart)
-    @html_map = generate_html_map(@json_map, sorted_tables, @chart_type, @timestamp_index)    
+    @html_map = generate_html_map(@json_map, sorted_tables, @selected_stat, @timestamp_index)    
     
     #todo: this selects the first table's timestamp.
     @time = Time.at sorted_tables.first.timestamps[@timestamp_index] / 10 ** 9

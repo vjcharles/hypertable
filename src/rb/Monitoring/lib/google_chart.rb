@@ -157,11 +157,12 @@ module GoogleChart
       title = ""
       href = ""
       item = ""
-      value = item.get_value selected_stat, timestamp_index, true
-      
+      value = "HI!"
       if area["name"] =~ /axis2_(.+)/
         index = $1
         item = sorted_stats.reverse[index.to_i]
+        
+        value = help.number_with_delimiter item.get_value selected_stat, timestamp_index, true
         title = item.id  #this may be an actual name later
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title) #title is also id right now. todo: better way to determine the path?
         map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}: #{value}'>\n"
@@ -169,6 +170,7 @@ module GoogleChart
         index_of_data = $1.to_i
         index = $2.to_i
         item = sorted_stats[index.to_i]
+        value = help.number_with_delimiter item.get_value selected_stat, timestamp_index, true
         title = item.id
         href = item.is_a?(RangeServer) ? range_server_path(title) : table_path(title)  #todo: better way to determine path?
         map += "\t<area name='#{area["name"]}' shape='#{area["type"]}' coords='#{area["coords"].join(",")}' href=\"#{href}\" title='#{title}: #{value}'>\n"

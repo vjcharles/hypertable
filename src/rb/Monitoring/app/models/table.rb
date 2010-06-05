@@ -5,7 +5,7 @@ class Table
   
   PATH_TO_FILE = "../../../run/monitoring/"
   ORIGINAL_FILE_NAME = "table_stats.txt"
-  COPY_FILE_NAME = "copy_of_#{@orig_file_name}"
+  COPY_FILE_NAME = "copy_of_#{ORIGINAL_FILE_NAME}"
   UNIT = FileReader::UNIT
   CHART_A_OPTIONS = FileReader::CHART_A_OPTIONS
   CHART_B_OPTIONS = FileReader::CHART_B_OPTIONS

@@ -16,4 +16,14 @@ class ApplicationController < ActionController::Base
     array.flatten.sort.first
   end
   
+  #to use helper methods in controller
+  def help
+    Helper.instance
+  end
+
+  class Helper
+    include Singleton
+    include ActionView::Helpers::NumberHelper
+  end
+  
 end
