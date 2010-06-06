@@ -8,7 +8,6 @@ class RangeServersController < ApplicationController
     @stat_types = RangeServer.get_stat_types
     pp @stat_types
     
-    
     @sort_types = ["data", "name"] 
     
     @selected_sort = params[:sort_by] || @sort_types[0] # default if no params in url
@@ -23,7 +22,9 @@ class RangeServersController < ApplicationController
     
     #temp, throws away elements that won't fit on the graph
     sorted_tables = sorted_range_servers.slice(0..(max_size - 1))
-    
+
+    #todo: give unique ids when creating multiple graphs on one page
+    @graph_id = 0 
     
     # stats_array = RangeServer.get_all_stats(sorted_range_servers, @selected_stat, @timestamp_index)
     @chart = generate_chart(@chart_type, sorted_range_servers, @selected_sort, @timestamp_index, @selected_stat)
@@ -34,8 +35,11 @@ class RangeServersController < ApplicationController
     #todo: this selects the first table's timestamp.
     @time = Time.at sorted_range_servers.first.timestamps[@timestamp_index] / 10 ** 9
     
+    # if request is ajax render only 
+    
     respond_to do |format|
       format.html # index.html.erb
+      format.js {render :partial => "ajax_data"}
     end
   end
   

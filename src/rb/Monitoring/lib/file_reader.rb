@@ -12,9 +12,9 @@ module FileReader
       :mhz => "Mhz"
     }
     
-    CHART_A_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
-    CHART_B_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
-    CHART_C_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 2, :space_between_groups => 4}
+    CHART_A_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 1, :space_between_groups => 2}
+    CHART_B_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 4, :space_between_bars => 1, :space_between_groups => 2}
+    CHART_C_OPTIONS = {:padding => 95, :legend_height => 8, :bar_width_or_scale => 8, :space_between_bars => 1, :space_between_groups => 2}
   
   def get_system_totals list=nil#, show_units=true
     list = list || self.get_stats
