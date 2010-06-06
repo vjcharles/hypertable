@@ -36,8 +36,11 @@ class ApplicationController < ActionController::Base
     rrd = "#{PATH_TO_FILE}#{rrd_name}_stats_v#{VERSION_NUMBER}.rrd"
     
     #todo: get proper times
-    start_time = range_server.timestamps[2] / 10 ** 9
-    end_time = range_server.timestamps[0] / 10 ** 9
+    # start_time = range_server.timestamps[2] / 10 ** 9
+    # end_time = range_server.timestamps[0] / 10 ** 9
+    now = Time.now
+    end_time = now.to_i
+    start_time = (now - 24.hours).to_i
     
     graphs = []
   
