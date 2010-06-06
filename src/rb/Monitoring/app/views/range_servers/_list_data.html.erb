@@ -13,7 +13,7 @@
 			
 		<% @stat_types.each do |stat| %>
 			<td>
-				<%= RangeServer.pretty_titleize stat %>
+				<%= link_to RangeServer.pretty_titleize(stat), "##{stat}" %>
 			</td>
 						
 				<% @time_intervals.each_with_index do |interval, index| %>

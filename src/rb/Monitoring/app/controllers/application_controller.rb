@@ -26,35 +26,42 @@ class ApplicationController < ActionController::Base
     include ActionView::Helpers::NumberHelper
   end
   
-  # # demonstrates retrieval and graph generation from an RRDtool db
-  def rrd_test
-    #todo: put require in a new initializers file
-    require "RRD"
+  # retrieval and graph generation from RRDtool dbs
+  PATH_TO_FILE = "../../../run/monitoring/"
+  VERSION_NUMBER = 0
   
-    PATH_TO_FILE = "../../../run/monitoring/"
-    FILE_NAME = "test"
-
-    rrd = "#{PATH_TO_FILE}#{FILE_NAME}.rrd"
-    start_time = 920804400
-    end_time = 920808000
+  def get_all_rrd_rs_graphs range_server, stat_types
+    rrd_name = range_server.name
+    
+    rrd = "#{PATH_TO_FILE}#{rrd_name}_stats_v#{VERSION_NUMBER}.rrd"
+    start_time = 1273511280
+    end_time = 1273515237
+    
+    graphs = []
   
-    puts "fetching data from #{rrd}"
-    (fstart, fend, data) = RRD.fetch(rrd, "--start", start_time, "--end", end_time, "AVERAGE")
+    stat_types.each do |stat_name|
+      file_name = "#{rrd_name}_#{stat_name.to_s}"
+      puts "fetching data from #{rrd}"
+      (fstart, fend, data) = RRD.fetch(rrd, "--start", start_time, "--end", end_time, "AVERAGE")
 
-    "rrdtool graph load.png --start 1273511280 --end 1273515237  DEF:cells_read=rs2_stats_v0.rrd:cells_read:AVERAGE DEF:cells_written=rs2_stats_v0.rrd:cells_written:AVERAGE LINE2:cells_read#FF0000 LINE2:cells_written#00FF00"
-
-
-    puts "got #{data.length} data points from #{fstart} to #{fend}"
-    puts
+      puts "got #{data.length} data points from #{fstart} to #{fend}"
+      puts
   
-    puts "generating graph #{name}.png"
-    RRD.graph(
-       "#{path}#{name}.png",
-        "--title", " vRubyRRD Demo", 
-        "--start", start_time,
-        "--end", end_time,
-        "DEF:myspeed=#{rrd}:speed:AVERAGE",
-        "LINE2:myspeed#FF0000")
-    return "#{name}.png"        
+      puts "generating graph #{rrd_name}.png"
+      RRD.graph(
+         "../../../src/rb/Monitoring/public/images/#{file_name}.png",
+          "--title", "#{RangeServer.pretty_titleize stat_name}", 
+          "--start", start_time,
+          "--end", end_time,
+          "DEF:cells_read=#{rrd}:cells_read:AVERAGE", 
+          "DEF:cells_written=#{rrd}:cells_written:AVERAGE",
+          "LINE2:cells_read#FF0000",
+          "LINE2:cells_written#00FF00")
+
+      graphs.push "#{file_name}.png"
+    end
+    
+    
+    return graphs        
   end
 end

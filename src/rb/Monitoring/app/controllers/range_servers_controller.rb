@@ -47,6 +47,8 @@ class RangeServersController < ApplicationController
     @time_intervals = FileReader::TIME_INTERVALS
     @range_server = RangeServer.get_stat params[:id]
     @stat_types = RangeServer.get_stat_types #array of symbols
+    
+    @rs_rrd_graphs = get_all_rrd_rs_graphs @range_server, @stat_types
   end
     
 end

@@ -1,0 +1,7 @@
+<% @stat_types.each_with_index do |stat_name, index| %>
+	
+	<div id='<%= stat_name %>'><%= image_tag @rs_rrd_graphs[index] %></div>
+	<br /><%= link_to "top", "#top"%>
+	<br /><br />
+	
+<% end %>
