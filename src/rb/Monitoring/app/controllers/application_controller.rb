@@ -34,34 +34,30 @@ class ApplicationController < ActionController::Base
     rrd_name = range_server.name
     
     rrd = "#{PATH_TO_FILE}#{rrd_name}_stats_v#{VERSION_NUMBER}.rrd"
-    start_time = 1273511280
-    end_time = 1273515237
+    
+    #todo: get proper times
+    start_time = range_server.timestamps[2] / 10 ** 9
+    end_time = range_server.timestamps[0] / 10 ** 9
     
     graphs = []
   
     stat_types.each do |stat_name|
       file_name = "#{rrd_name}_#{stat_name.to_s}"
-      puts "fetching data from #{rrd}"
       (fstart, fend, data) = RRD.fetch(rrd, "--start", start_time, "--end", end_time, "AVERAGE")
-
-      puts "got #{data.length} data points from #{fstart} to #{fend}"
-      puts
-  
-      puts "generating graph #{rrd_name}.png"
-      RRD.graph(
-         "../../../src/rb/Monitoring/public/images/#{file_name}.png",
-          "--title", "#{RangeServer.pretty_titleize stat_name}", 
-          "--start", start_time,
-          "--end", end_time,
-          "DEF:cells_read=#{rrd}:cells_read:AVERAGE", 
-          "DEF:cells_written=#{rrd}:cells_written:AVERAGE",
-          "LINE2:cells_read#FF0000",
-          "LINE2:cells_written#00FF00")
-
-      graphs.push "#{file_name}.png"
+      graph_key = RangeServer.get_chart_type stat_name
+      if RangeServer::STAT_TO_RRD_KEY[:"#{stat_name}"]     
+        stat_a = RangeServer::STAT_TO_RRD_KEY[graph_key[:stats][0]]
+        RRD.graph(
+           "../../../src/rb/Monitoring/public/images/#{file_name}.png",
+            "--title", "#{RangeServer.pretty_titleize stat_name}", 
+            "--start", start_time,
+            "--end", end_time,
+            "DEF:#{stat_a}=#{rrd}:#{stat_a}:AVERAGE", 
+            "LINE2:#{stat_a}#FF0000")
+        end
+        graphs.push "#{file_name}.png"
+      end
+      return graphs        
     end
-    
-    
-    return graphs        
-  end
+  
 end

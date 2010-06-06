@@ -13,7 +13,7 @@
 			
 		<% @stat_types.each do |stat| %>
 			<td>
-				<%= link_to RangeServer.pretty_titleize(stat), "##{stat}" %>
+				<%= link_to_if_rrd_chart_exists stat %>
 			</td>
 						
 				<% @time_intervals.each_with_index do |interval, index| %>

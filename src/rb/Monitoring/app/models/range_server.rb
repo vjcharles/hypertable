@@ -84,6 +84,28 @@ class RangeServer
     
   }
 
+  STAT_TO_RRD_KEY = {
+    :num_ranges => "num_ranges",
+    :syncs => "syncs",
+    :scans => "scans",
+    
+    :cells_read => "cells_read",
+    :bytes_read => "bytes_read",
+    :cells_written => "cells_written",
+    :bytes_written => "bytes_written",
+
+    :query_cache_accesses => "q_c_accesses",
+    :query_cache_hits => "q_c_hits",
+    :block_cache_accesses => "b_c_accesses",
+    :block_cache_hits => "b_c_hits",
+
+    :query_cache_max_memory => "q_c_max_mem",
+    :query_cache_available_memory => "q_c_avail_mem",
+
+    :block_cache_available_memory => "b_c_avail_mem",
+    :block_cache_max_memory => "b_c_max_mem"
+  }
+
   def self.get_stat_types
     STATS_KEY.keys.sort {|a,b| a.to_s <=> b.to_s}.map {|d| d.to_s}
   end
