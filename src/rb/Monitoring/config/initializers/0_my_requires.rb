@@ -5,3 +5,4 @@ require 'ftools'
 
 # gems
 require 'json'
+require "RRD"
